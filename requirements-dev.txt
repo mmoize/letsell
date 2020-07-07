@@ -4,6 +4,7 @@ dj-static==0.0.6
 Django==3.0.8
 djangorestframework==3.11.0
 Pillow==7.2.0
+psycopg2==2.8.5
 PyJWT==1.7.1
 python-decouple==3.3
 pytz==2020.1
