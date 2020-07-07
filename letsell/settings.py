@@ -155,3 +155,18 @@ STATICFILES_DIRS = (
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 MEDIA_URL = '/media/'
+
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8100',
+    'https://localhost:8100',
+    'https://101.114.183.81',
+    'https://101.114.183.81:8100',
+    'https://101.114.183.81',
+    'http://101.114.183.81',
+    'http://localhost',
+    'https://localhost',
+
+]
