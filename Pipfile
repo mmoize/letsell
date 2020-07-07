@@ -19,6 +19,7 @@ django-cors-headers = "*"
 install = "*"
 boto3 = "*"
 django-storages = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
