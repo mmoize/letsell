@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
         "dburl",
+        "gunicorn",
+        "letsell",
         "sellet"
     ]
 }

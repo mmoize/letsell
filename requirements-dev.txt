@@ -11,6 +11,7 @@ django-login-history==0.1.1
 django-storages==1.9.1
 djangorestframework==3.11.0
 docutils==0.15.2
+gunicorn==20.0.4
 idna==2.10
 install==1.3.3
 jmespath==0.10.0
