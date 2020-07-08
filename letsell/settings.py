@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_login_history',
     'storages',
+    'store.apps.StoreConfig',
 ]
 
 MIDDLEWARE = [

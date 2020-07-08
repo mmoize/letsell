@@ -14,6 +14,7 @@ class Category(models.Model):
     
     description = models.CharField(max_length=50, verbose_name=ugettext_lazy('Description'))
 
+
     class Meta:
 
         verbose_name = ugettext_lazy('Category')
@@ -29,7 +30,7 @@ class Category(models.Model):
 class ProductBase(models.Model):
 
     barcode = models.CharField(primary_key=True, max_length=20, verbose_name=ugettext_lazy('Barcode'))
-    title = models.TextField(_(verbose_name=ugettext_lazy('Title'))
+    title = models.TextField(verbose_name=ugettext_lazy('Title'))
     description = models.TextField(verbose_name=ugettext_lazy('Description'))
     image = models.ImageField(verbose_name=ugettext_lazy('Image'), upload_to=None, height_field=None, width_field=None, max_length=None)
     price = models.DecimalField(verbose_name=ugettext_lazy('Price'), max_digits=10, decimal_places=3)
