@@ -78,8 +78,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     profile = ProfileSerializer(write_only=True)
 
-    first_name = serializers.CharField(source='profile.f_name', read_only=True)
-    last_name = serializers.CharField(source='profile.l_name', read_only=True)
+    first_name = serializers.CharField(source='profile.first_name', read_only=True)
+    last_name = serializers.CharField(source='profile.last_name', read_only=True)
     country = serializers.CharField(source='profile.country', read_only=True)
     city = serializers.CharField(source='profile.city', read_only=True)
     bio = serializers.CharField(source='profile.bio', read_only=True)
@@ -88,7 +88,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         
-        fields = ('email', 'profile', 'username', 'password', 'token', 'f_name', 'l_name', 'country', 'city', 'bio', 'image',)
+        fields = ('email', 'profile', 'username', 'password', 'token', 'first_name', 'last_name', 'country', 'city', 'bio', 'image',)
 
         read_only_fields = ('token',)
     

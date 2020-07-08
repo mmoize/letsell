@@ -30,8 +30,8 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
             'email': user_data.get('email', request.user.email),
 
             'profile': {
-                'first_name': user_data.get('f_name', request.user.profile.f_name),
-                'last_name': user_data.get('l_name', request.user.profile.l_name),
+                'first_name': user_data.get('first_name', request.user.profile.first_name),
+                'last_name': user_data.get('last_name', request.user.profile.last_name),
                 'country': user_data.get('country', request.user.profile.country),
                 'city' : user_data.get('city', request.user.profile.city),
                 'bio': user_data.get('bio', request.user.profile.bio),

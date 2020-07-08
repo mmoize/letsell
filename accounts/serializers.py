@@ -4,8 +4,8 @@ from .models import Profile
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user_info.username')
-    user_id = serializers.CharField(source='user_info.id')
+    username = serializers.CharField(source='user.username')
+    user_id = serializers.CharField(source='user.id')
     first_name = serializers.CharField(allow_blank=False, required=True)
     last_name = serializers.CharField(allow_blank=False, required=True)
     country = serializers.CharField(allow_blank=True, required=False)
@@ -14,5 +14,5 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('user_id','username',  'first_name', 'last_name', 'country', 'city', 'bio', 'image', 'user_info')
+        fields = ('user_id','username',  'first_name', 'last_name', 'country', 'city', 'bio', 'image', 'user')
     

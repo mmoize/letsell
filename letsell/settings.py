@@ -26,7 +26,9 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 
 ALLOWED_HOSTS = [
-    'sellet.herokuapp.com'
+    'sellet.herokuapp.com',
+    '127.0.0.1'
+    
 ]
 
 AUTH_USER_MODEL = 'authentication.User'

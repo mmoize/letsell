@@ -23,7 +23,7 @@ class ProfileRetrieveAPIView(RetrieveAPIView):
 
         try:
 
-            profile = Profile.objects.select_related('user_info').get(user_info=username)
+            profile = Profile.objects.select_related('user').get(user=username)
         except Profile.DoesNotExist:
             raise ProfileDoesNotExist
 

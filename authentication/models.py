@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import ( AbstractBaseUser, BaseUserManager, PermissionsMixin )
 from django.db import models
-from core.models import TimestampedModel
 
 
-from core.models import TimestampedModel
+
 from django.db import models
 import jwt
 from datetime import datetime, timedelta
@@ -36,10 +35,12 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
+class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index=True, max_length=100, unique=True)
 
     email = models.EmailField(db_index=True, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
