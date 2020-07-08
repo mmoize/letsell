@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy
 from django.conf import settings
 from django.urls import reverse
 from django.db.models.signals import pre_save
+from authentication.models import User
 
 from .utils import unique_slug_generator
 
@@ -82,6 +83,7 @@ def pre_save_product_receiver(sender, instance, *args, **kwargs):
 
 pre_save.connect(pre_save_product_receiver, sender=Product)
 
+
     # different payment methods
 class PaymentMethod(models.Model):
     description = models.CharField(unique=True, max_length=50, verbose_name=ugettext_lazy('Description'))
@@ -95,6 +97,126 @@ class PaymentMethod(models.Model):
     
     def __repr__(self):
         return ('PaymentMethod(description={})').format(self.description)
+
+
+    # purchase's header fields
+class PurchaseOrder(models.Model):
+
+    timestamp = models.DateTimeField(verbose_name=ugettext_lazy('Timestamp'))
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name=ugettext_lazy('User')
+    )
+
+    cart = models.BooleanField(verbose_name=ugettext_lazy('Cart'))
+
+    class Meta:
+
+        verbose_name = ugettext_lazy('PurchaseOrder')
+        verbose_name_plural = ugettext_lazy('PurchaseOrders')
+    
+    def __str__(self):
+        return 'PurchaseOrder - {}'.format(self.id)
+
+    def __repr__(self):
+        return ('PurchaseOrder(id={},timestamp={},user={},cart={})').format(
+            self.id,
+            self.timestamp,
+            self.user,
+            self.cart
+        )
+    
+    # The products of a specific PurchaseOrder.
+class PurchaseItem(ProductBase):
+
+    id = models.AutoField(primary_key=True)
+    
+    barcode = models.CharField(
+        max_length=20, verbose_name=ugettext_lazy('Barcode')
+    )
+
+    purchase_order = models.ForeignKey(
+        PurchaseOrder, on_delete=models.CASCADE,
+        verbose_name=ugettext_lazy('PurchaseOrder')
+    )
+
+    quantity = models.DecimalField(
+        max_digits=8, decimal_places=3, verbose_name=ugettext_lazy('Quantity')
+    )
+
+    total_price = models.DecimalField(
+        max_digits=8, decimal_places=3,
+        verbose_name=ugettext_lazy('TotalPrice')
+    )
+
+    slug = None  # purchaseItem class doesnt utilize slug.
+
+    class Meta:
+        verbose_name = ugettext_lazy('PurchaseItem')
+        verbose_name_plural = ugettext_lazy('PurchaseItems')
+    
+    def __str__(self):
+        return 'PurchaseItem {} - order {}'.format(
+            self.id, self.purchase_order.id
+        )
+    
+    def __repr__(self):
+        return (
+            'PurchaseItem(id={},barcode={},purchase_order={},'
+            'quantity={},total_price={})'.format(
+                self.id,
+                self.barcode,
+                self.purchase_order.id,
+                self.quantity,
+                self.total_price
+            )
+        )
+
+      # the payment methods chosen by the user for specific purchase order
+class PurchasePaymentMethod(models.Model):
+
+    purchase_order = models.ForeignKey(
+        PurchaseOrder, on_delete=models.CASCADE,
+        verbose_name=ugettext_lazy('PurchaseOrder')
+    )
+
+    payment_method = models.ForeignKey(
+        PaymentMethod, on_delete=models.PROTECT,
+        verbose_name=ugettext_lazy('PaymentMethod')
+    )
+
+    value = models.DecimalField(
+        max_digits=8, decimal_places=3, verbose_name=ugettext_lazy('Value')
+    )
+
+    class Meta:
+
+        verbose_name = ugettext_lazy('PurchasePaymentMethod')
+        verbose_name_plural = ugettext_lazy('PurchasePaymentMethods')
+    
+    def __str__(self):
+        return 'PurchasePaymentMethod {} - order {}'.format(
+            self.id, self.purchase_order.id
+        )
+    
+    def __repr__(self):
+        return (
+            'PurchasePaymentMethod(id={},purchase_order={},'
+            'payment_method={},value={})'.format(
+                self.id,
+                self.purchase_order.id,
+                self.payment_method.description,
+                self.value
+            )
+        )
+
+
+
+
+
+
+
 
     
     
