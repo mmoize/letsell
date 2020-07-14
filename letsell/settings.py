@@ -48,7 +48,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_login_history',
     'storages',
-    'store.apps.StoreConfig',
+    # 'store.apps.StoreConfig',
+    'discover.apps.DiscoverConfig',
+    'django_extensions',
+    'djgeojson',
+    'taggit_serializer',
+    'taggit',
 ]
 
 MIDDLEWARE = [

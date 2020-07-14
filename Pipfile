@@ -21,6 +21,12 @@ boto3 = "*"
 django-storages = "*"
 requests = "*"
 gunicorn = "*"
+django-tagulous = "*"
+django-extensions = "*"
+django-geojson = "*"
+django-model-utils = "*"
+django-taggit = "*"
+django-taggit-serializer = "*"
 
 [requires]
 python_version = "3.7"

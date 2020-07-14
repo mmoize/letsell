@@ -4,11 +4,20 @@ from django.conf import settings
 from django.urls import reverse
 from django.db.models.signals import pre_save
 from authentication.models import User
+from django.http import HttpResponse, JsonResponse
+import os
+# from .utils import unique_slug_generator, random_string_generator
 
-from .utils import unique_slug_generator
+from django_extensions.db.models import (ActivatorModel,TimeStampedModel)
+                                         
+from djgeojson.fields import PointField
+from django.db.models import Q
+from django.urls import reverse
+from core.models import RandomSlugModel
+from authentication.models import User
+from django.utils.translation import ugettext_lazy 
+from taggit.managers import TaggableManager
 
-
-# list of categories for the given products
 class Category(models.Model):
 
     
@@ -21,20 +30,25 @@ class Category(models.Model):
         verbose_name_plural = ugettext_lazy('Categories')
 
     def __str__(self):
-        return 'Category - {}'.format(self.description)
+        return self.description
     
-    def __str__(self):
-        return ('Category(description={})').format(self.description)
-    
-# Productbase Represents both Product and PurchaseItem, it has common fields between the two
-class ProductBase(models.Model):
 
+class Tags(models.Model):
+    name = models.CharField(max_length=15, blank=True, )
+
+    def __str__(self):
+        template = '{0.name}'
+        return template.format(self)
+
+# Productbase Represents both Product and PurchaseItem, it has common fields between the two
+class ProductBase(TimeStampedModel):
     barcode = models.CharField(primary_key=True, max_length=20, verbose_name=ugettext_lazy('Barcode'))
     title = models.TextField(verbose_name=ugettext_lazy('Title'))
     description = models.TextField(verbose_name=ugettext_lazy('Description'))
-    image = models.ImageField(verbose_name=ugettext_lazy('Image'), upload_to=None, height_field=None, width_field=None, max_length=None)
+    # image = models.ImageField(verbose_name=ugettext_lazy('Image'), upload_to=None, height_field=None, width_field=None, max_length=None)
     price = models.DecimalField(verbose_name=ugettext_lazy('Price'), max_digits=10, decimal_places=3)
-    category = models.ForeignKey(Category, verbose_name=ugettext_lazy('Category'), on_delete=models.CASCADE)
+    category = models.CharField(verbose_name=ugettext_lazy('Category'), max_length=50)
+    # category = models.ForeignKey(Category, verbose_name=ugettext_lazy('Category'), on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -51,38 +65,81 @@ class Product(ProductBase):
     class Meta:
         verbose_name = ugettext_lazy('Product')
         verbose_name_plural = ugettext_lazy('Products')
-    
-    barcode = models.CharField(primary_key=True, max_length=20, verbose_name=ugettext_lazy('Barcode'))
-    slug = models.SlugField(unique=True)
-    
-    
+        ordering = ['-created', '-modified']   
+        
+    barcode = models.CharField(max_length=20, verbose_name=ugettext_lazy('Barcode'), blank=True)
+    slug = models.SlugField(unique=True, blank=True)
+    user = models.ForeignKey(User, default=1,  on_delete=models.CASCADE, verbose_name=ugettext_lazy('User'))
+    tags = models.ManyToManyField(Tags, related_name='tags', blank=True)
+    taggit = TaggableManager(blank=True)
     # returns the entire product endpoint(product-details endpoints plus slug field)
 
-    def get_absolute_url(self):
-        return reverse('store:product-detail', kwargs={'slug': self.slug})
+    # def get_absolute_url(self):
+    #     return reverse('discover:productview-detail', kwargs={'slug': self.slug})
     
     def __str__(self):
-        return 'Product - {}'.format(self.title)
+        return self.title
+
 
     def __repr__(self):
-        return (
-            'Product(barcode={},title={},description={},'
-            'price={},category={},slug={})'.format(
+ 
+        return   ('Productbarcode={},title={},description={},''price={},category={},slug={}').format(
                 self.barcode,
                 self.title,
                 self.description,
                 self.price,
-                self.category.description,
+                self.category,
                 self.slug
             )
-        )
+        
 
-    # for slug generation before saving the products instance
-def pre_save_product_receiver(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = unique_slug_generator(instance)
+        
+       
+            
+    
 
-pre_save.connect(pre_save_product_receiver, sender=Product)
+
+
+def Product_image_path(instance, filename):
+    return os.path.join('ProductsImage', str(instance.product.user), filename)
+
+class ProductImage(TimeStampedModel):
+    product= models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
+    image = models.ImageField(upload_to= Product_image_path)
+    user = models.ForeignKey(User, default="1", on_delete=models.CASCADE)
+
+    def __str__(self):
+        template = '{0.user.username} {0.product.id}'
+        return template.format(self)
+
+    class Meta:
+        ordering = ['-created',]
+
+
+
+
+class Post(models.Model):
+    owner = models.ForeignKey(User,  on_delete=models.CASCADE, verbose_name=ugettext_lazy('Owner'))
+    latitude = models.DecimalField(verbose_name=ugettext_lazy("Latitude"), max_digits=22, decimal_places=16, blank=True, null=True)
+    longitude = models.DecimalField(verbose_name=ugettext_lazy("Longitude"),max_digits=22, decimal_places=16, blank=True, null=True)
+    product = models.ManyToManyField(Product, verbose_name=ugettext_lazy("Product"), blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = ugettext_lazy('Post')
+        verbose_name_plural = ugettext_lazy('Posts')
+        ordering = ['-created_at', '-updated_at']  
+
+    def __str__(self):
+        template = '{0.owner.username} '
+        return template.format(self)
+
+
+
+
+
+
 
 
     # different payment methods
@@ -101,9 +158,8 @@ class PaymentMethod(models.Model):
 
 
     # purchase's header fields
-class PurchaseOrder(models.Model):
+class PurchaseOrder(TimeStampedModel):
 
-    timestamp = models.DateTimeField(verbose_name=ugettext_lazy('Timestamp'))
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -220,17 +276,3 @@ class PurchasePaymentMethod(models.Model):
 
 
     
-    
-
-
-    
-
-
-
-
-
-
-    
-
-
-
