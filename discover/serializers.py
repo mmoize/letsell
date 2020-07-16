@@ -143,7 +143,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
 
     class Meta:
         model = Post
-        fields = ('url', 'product','owner', 'created_at', 'updated_at', 'latitude', 'longitude',)
+        fields = ('url', 'id','product','owner', 'created_at', 'updated_at', 'latitude', 'longitude',)
         # fields = '__all__'
         extra_kwargs = { 
             'owner': {'required': False}

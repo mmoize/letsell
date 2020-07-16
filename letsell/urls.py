@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/', include('authentication.urls', namespace='authentication')),
     path('api/', include('accounts.urls', namespace='accounts')),
     path('api/', include('discover.urls', namespace='discover')),
+    path('api/', include('messaging.urls', namespace='messaging')),
 ]

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'djgeojson',
     'taggit_serializer',
     'taggit',
+    'messaging.apps.MessagingConfig'
 ]
 
 MIDDLEWARE = [
