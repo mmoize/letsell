@@ -35,24 +35,36 @@ class TagsSerializer(serializers.HyperlinkedModelSerializer):
 
 class Product_ImageSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = ProductImage
-        fields =['url','product','pk', 'image', 'created', 'user']
- 
-
-
-class ProductImageSerializer(serializers.HyperlinkedModelSerializer):
-    #url = serializers.HyperlinkedIdentityField(view_name="discover:productview-detail",  source="productimage")
-    #url = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True, lookup_field="ProductImage")
-    product = serializers.HyperlinkedRelatedField(view_name="discover:productview-detail", read_only=True)
+    url = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True, lookup_field="productimage")
+    product = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, source="product_user" )
+    products_id = serializers.CharField(source='product_id', read_only=True)
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = ProductImage
-        fields =['product','pk','url', 'image', 'created', 'user']
+        fields =['id', 'product','url', 'products_id', 'image', 'created', 'user']
         extra_kwargs = { 
             'product': {'required': False},
-            'url': {'view_name': 'discover:productimage-detail'}, 
+            'products_id': {'required': False},
+            # 'url': {'view_name': 'discover:productimage-detail'}, 
+        }
+ 
+
+
+class ProductImageSerializer(serializers.HyperlinkedModelSerializer):
+    #url = serializers.HyperlinkedIdentityField(view_name="discover:productimage-detail",  source="productimage")
+    url = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True, lookup_field="productimage")
+    product = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, source="product_user" )
+    products_id = serializers.CharField(source='product_id', read_only=True)
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = ProductImage
+        fields =['id', 'product','url', 'products_id', 'image', 'created', 'user']
+        extra_kwargs = { 
+            'product': {'required': False},
+            'products_id': {'required': False},
+            # 'url': {'view_name': 'discover:productimage-detail'}, 
         }
  
     
@@ -74,9 +86,9 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     tags = TagsSerializer( allow_null=True, many=True, read_only=True)
     user = UserSerializer(read_only=True)
     taggit = TagListSerializerField(allow_null=True, required=False)
-    #product_image_set = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True, lookup_field='pk' )
-    product_image_set = ProductImageSerializer(allow_null=True, many=True, read_only=True )
-    url = serializers.HyperlinkedRelatedField(view_name="discover:products-detail", read_only=True, lookup_field="products")
+    #product_image_set = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True)
+    product_image_set = ProductImageSerializer(allow_null=True, many=True, read_only=True)
+    url = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, lookup_field="product_user")
     # category = CategorySerializer()
     class Meta:
         """ ProductSerializer's Meta class """
@@ -100,19 +112,25 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
                 user = self.context['request'].user
             )
 
+            # if 'included_images' in self.context:
+                
+            #     images_data = self.context['included_images']
+            #     for i in images_data.getlist('image'):
+            #         print("another", i)
+            #         ProductImage.objects.create(product=product_obj, image=i,  user=self.context['request'].user)
+
         except Exception:
             raise NotAcceptable(
                 detail={
                     'message': 'The request is not acceptable.'
                 }, code=406)
 
-        if 'included_images' in self.context:
-               
-            images_data = self.context['included_images']
-            for i in images_data.getlist('image'):
-                print("another", i)
-                ProductImage.objects.create(product=product_obj, image=i,  user=self.context['request'].user)
 
+
+        images_data = self.context['included_images']
+        for i in images_data.getlist('image'):
+            print("another", i)
+            ProductImage.objects.create(product=product_obj, image=i,  user=self.context['request'].user)
 
         if 'taggit' in validated_data:
             taggit_data = validated_data.pop('taggit')
@@ -122,7 +140,6 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         
         if 'tags' in validated_data:
             tags_data = validated_data.pop('tags')
-            print()
             for tags_data in tags_data:
                 for i in tags_data.items():
                     tags_obj, created = Tags.objects.get_or_create(name=i[1])
@@ -138,12 +155,12 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
     url = serializers.HyperlinkedRelatedField(view_name="discover:post_create-detail", read_only=True)
     owner = UserSerializer(read_only=True,)
-    #product = serializers.HyperlinkedRelatedField(view_name="discover:products-detail", read_only=True, )
+    product_image_set = ProductImageSerializer(many=True, read_only=True )
     product = ProductSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ('url', 'id','product','owner', 'created_at', 'updated_at', 'latitude', 'longitude',)
+        fields = ('url', 'id','product','owner', 'product_image_set', 'created_at', 'updated_at', 'latitude', 'longitude',)
         # fields = '__all__'
         extra_kwargs = { 
             'owner': {'required': False}

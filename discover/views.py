@@ -16,6 +16,7 @@ from rest_framework.exceptions import NotAcceptable
 from rest_framework import status, generics
 from django.shortcuts import get_list_or_404, get_object_or_404
 from core.renderers import CoreJSONRenderer
+from rest_framework.generics import RetrieveAPIView, UpdateAPIView
 
 from discover.models import (
     Category,
@@ -98,6 +99,7 @@ class PostView(APIView):
 
         return JsonResponse(serializer.data)
 
+
 @csrf_exempt
 def Post_list(request):
     """
@@ -108,7 +110,34 @@ def Post_list(request):
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+class PostDetailView(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
 
+    def get_queryset(self):
+        posts = super(PostDetailView, self).get_queryset()
+        print(self.kwargs['id'])
+        post = posts.filter(id=self.kwargs['id'])
+        print('this is post',post)
+        return post
+         
+    
+
+
+
+
+class Post_DetailView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PostSerializer
+    #queryset = Post.objects.all()
+
+    def get(self, pk, request, format=None):
+        queryset = Post.objects.all()
+        print('this is queryset', queryset)
+        serializer = PostSerializer(queryset)
+
+        return Response(queryset)
 
 #----------------------------------end-post
 class CategoryView(ModelViewSet):
@@ -237,6 +266,50 @@ def Product_image_list(request):
         serializer = Product_ImageSerializer(data=product_image, context={'request': request}, many=True)
         serializer.is_valid()
         return JsonResponse(serializer.data, safe=False)
+
+class ProductImageViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    queryset = ProductImage.objects.all()
+    serializer_class = ProductImageSerializer
+
+    def get(self, request, id, *args, **kwargs):
+        queryset = ProductImage.objects.all()
+        images = queryset.objects.filter(product_id= id)
+        print('this is images', images)
+        
+        return Response(queryset)
+
+class  ProductImageset(APIView):
+    permission_classes = (AllowAny, )
+    serializer_class = ProductImageSerializer
+    queryset = ProductImage.objects.all()
+
+    def get(self, request, id,):
+        queryset = ProductImage.objects.all()
+        images = queryset.filter(product_id= id)
+        
+        lists = list(images)
+
+        print(lists)
+        cont = {}
+        recont = []
+        for i in lists:
+            cont.update({
+                'product': i.product,
+                'user': i.user,
+                'image': i.image
+            })
+            serializer = Product_ImageSerializer(data=cont)
+            serializer.is_valid()
+
+            recont.append({'productimage': serializer.data})
+            print(recont)
+            reco = list(recont)
+        print('hello there',reco)
+        return Response(reco)
+        
+
+
          
 #-------------------------------end-Product
 

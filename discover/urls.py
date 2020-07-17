@@ -12,7 +12,11 @@ from discover.views import (
     PostCreatView,
     PostView,
     Post_list,
-    Product_image_list
+    Product_image_list,
+    PostDetailView,
+    Post_DetailView,
+    ProductImageViewSet,
+    ProductImageset
 )
   
 
@@ -20,6 +24,7 @@ view_categories = CategoryView.as_view({'get': 'list'})
 #------------------------end-categories
 postcreateview = PostCreatView.as_view({'post': 'create'})
 postview = PostCreatView.as_view({'get': 'list'})
+postdetailview = PostDetailView.as_view({'get': 'list'})
 
 
 app_name = 'discover'
@@ -47,7 +52,9 @@ urlpatterns = [
         name='productview'
     ),
     path('viewproduct/', Product_list, name='products'),
-     path('viewproductimage/', Product_image_list, name='productimage-detail'),
+    #path('viewproductimage/', ProductImageViewSet.as_view({'get': 'list'}), name='productimage-detail'),
+    #path('viewproductimagedetail/<int:id>', ProductImageViewSet.as_view({'get': 'list'}), name='productimage-details'),
+    path('imageset/<int:id>/', ProductImageset.as_view(), name='imageset-detail'),
     #------------------------end-products
 
 
@@ -64,7 +71,15 @@ urlpatterns = [
     ),
     path('postviewer/', PostView),
     
-     path('viewpost/', Post_list, name='products'),
+    path('viewpost/', Post_list, name='products'),
+    
+    path('postdetail/<int:id>', postdetailview , name='postdetail'),
+     
+    path(
+        'postdetails/',
+        Post_DetailView.as_view(),
+        name='productview'
+    ),
     #------------------------end-post
 
     path(
