@@ -42,7 +42,7 @@ class Product_ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields =['id', 'product','url', 'products_id', 'image', 'created', 'user']
+        fields =['id', 'product','url','pk', 'products_id', 'image', 'created', 'user']
         extra_kwargs = { 
             'product': {'required': False},
             'products_id': {'required': False},

@@ -292,21 +292,41 @@ class  ProductImageset(APIView):
 
         print(lists)
         cont = {}
-        recont = []
+        productimages = []
         for i in lists:
+            condo = i.product.id
+            prod_barcode = i.product.barcode
+            prod_title = i.product.title
+            prod_description = i.product.description
+            prod_price = i.product.price
+            prod_category = i.product.category
+            prod_slug = i.product.slug
+
+            product = {}
+            product.update({'jesys':prod_barcode})
+            product.update({'title': prod_title})
+            product.update({'description': prod_description})
+            product.update({'price': prod_price})
+            product.update({'category': prod_category})
+            product.update({'slug': prod_slug})
+
+
+            print('this is IIII',product)
             cont.update({
-                'product': i.product,
+                'product': product,
                 'user': i.user,
                 'image': i.image
             })
             serializer = Product_ImageSerializer(data=cont)
             serializer.is_valid()
 
-            recont.append({'productimage': serializer.data})
-            print(recont)
-            reco = list(recont)
-        print('hello there',reco)
-        return Response(reco)
+            product.update({'productimage': serializer.data})
+            productimages.append( {'product': product})
+     
+           
+        
+        print('hello there',productimages)
+        return Response(productimages)
         
 
 
