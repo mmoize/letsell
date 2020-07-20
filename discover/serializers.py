@@ -52,9 +52,9 @@ class Product_ImageSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.HyperlinkedModelSerializer):
-    #url = serializers.HyperlinkedIdentityField(view_name="discover:productimage-detail",  source="productimage")
+    #url = serializers.HyperlinkedIdentityField(view_name="discover:productimage-detail",  lookup_field="pk")
     url = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True, lookup_field="productimage")
-    product = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, source="product_user" )
+    product = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, source="product")
     products_id = serializers.CharField(source='product_id', read_only=True)
     user = UserSerializer(read_only=True)
 
@@ -64,7 +64,7 @@ class ProductImageSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = { 
             'product': {'required': False},
             'products_id': {'required': False},
-            # 'url': {'view_name': 'discover:productimage-detail'}, 
+            'url': {'view_name': 'discover:productimage-detail'}, 
         }
  
     
@@ -83,18 +83,22 @@ class ProductImageSerializer(serializers.HyperlinkedModelSerializer):
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     """ Serializer for the Product model """
+    productimage_set = Product_ImageSerializer(allow_null=True, many=True, read_only=True)
     tags = TagsSerializer( allow_null=True, many=True, read_only=True)
     user = UserSerializer(read_only=True)
     taggit = TagListSerializerField(allow_null=True, required=False)
     #product_image_set = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True)
-    product_image_set = ProductImageSerializer(allow_null=True, many=True, read_only=True)
-    url = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, lookup_field="product_user")
+    url = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, lookup_field="pk")
+    #url = serializers.HyperlinkedIdentityField(view_name="discover:product-detail", read_only=True, )
     # category = CategorySerializer()
     class Meta:
         """ ProductSerializer's Meta class """
 
         model = Product
-        fields = ["tags","taggit","id",'url', "created", "title", 'product_image_set', "description", "price", "barcode", "slug", "category", "user"]
+        fields = ["tags","taggit","id",'url', "created", "title", 'productimage_set', "description", "price", "barcode", "slug", "category", "user"]
+        extra_kwargs = {
+            'product_image_set': {'view_name': 'discover:productimage-detail'},
+        }
 
 
     def create(self, validated_data):
@@ -155,12 +159,11 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
     url = serializers.HyperlinkedRelatedField(view_name="discover:post_create-detail", read_only=True)
     owner = UserSerializer(read_only=True,)
-    product_image_set = ProductImageSerializer(many=True, read_only=True )
     product = ProductSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ('url', 'id','product','owner', 'product_image_set', 'created_at', 'updated_at', 'latitude', 'longitude',)
+        fields = ('url', 'id','product','owner', 'created_at', 'updated_at', 'latitude', 'longitude',)
         # fields = '__all__'
         extra_kwargs = { 
             'owner': {'required': False}

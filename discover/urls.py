@@ -7,7 +7,6 @@ from discover.views import (
     PurchaseOrderCreateView,
     PurchaseItemCreateView,
     CategoryView,
-    ProductsView,
     Product_list,
     PostCreatView,
     PostView,
@@ -46,14 +45,8 @@ urlpatterns = [
         ProductCreateView.as_view({'post': 'create'}),
         name='products'
     ),
-    path(
-        'productview/',
-        ProductsView.as_view(),
-        name='productview'
-    ),
-    path('viewproduct/', Product_list, name='products'),
-    #path('viewproductimage/', ProductImageViewSet.as_view({'get': 'list'}), name='productimage-detail'),
-    #path('viewproductimagedetail/<int:id>', ProductImageViewSet.as_view({'get': 'list'}), name='productimage-details'),
+    path('viewproduct/', Product_list, name='products-detail'),
+    path('viewproductimage/', ProductImageViewSet.as_view({'get': 'list'}), name='productimage-detail'),
     path('imageset/<int:id>/', ProductImageset.as_view(), name='imageset-detail'),
     #------------------------end-products
 

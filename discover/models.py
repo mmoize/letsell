@@ -104,7 +104,7 @@ def Product_image_path(instance, filename):
     return os.path.join('ProductsImage', str(instance.product.user), filename)
 
 class ProductImage(TimeStampedModel):
-    product= models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
+    product= models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to= Product_image_path)
     user = models.ForeignKey(User, default="1", on_delete=models.CASCADE)
 

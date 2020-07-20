@@ -162,38 +162,6 @@ class CategoryCreateView(CreateAPIView):
 
 #----------------------------------end-Category
 
-class ProductsView(APIView):
-    permission_classes = (AllowAny,)
-    serializer_class = ProductSerializer,
-    queryset = Product.objects.all()
-
-    def get(self, request, format=None):
-        queryset = Product.objects.all()
-        serializer = ProductSerializer(queryset, many=True)
-
-        return Response(serializer.data)
-
-
-    # def get_queryset(self, *args, **kwargs):
-
-    #     queryset = Product.objects.all()
-
-    #     category = self.request.GET.get('category', None)
-    #     print('its the category', category)
-
-    #     if category:
-    #         queryset = queryset.filter(category_description=category)
-    #     q = self.request.GET.get('q', None)
-    #     if q:
-    #         queryset = queryset.filter(Q(title__icontains=q) | Q(description__icontains=q))
-    #     entry_list = list(Product.objects.all())
-    #     print(entry_list)
-    #     return entry_list
-    
-    # def get_context_data(self, **kwargs):
-    #     context = super(ProductsView, self).get_context_data(**kwargs)
-    #     context["categories"] = Category.objects.all()
-    #     return context
 @csrf_exempt
 def Product_list(request):
     """
@@ -269,15 +237,27 @@ def Product_image_list(request):
 
 class ProductImageViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
-    queryset = ProductImage.objects.all()
-    serializer_class = ProductImageSerializer
+ 
+    serializer_class = Product_ImageSerializer
 
-    def get(self, request, id, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs):
         queryset = ProductImage.objects.all()
-        images = queryset.objects.filter(product_id= id)
-        print('this is images', images)
-        
-        return Response(queryset)
+
+        return queryset
+
+# class ProductImageViewSet(ModelViewSet):
+#     permission_classes = (IsAuthenticated,)
+ 
+#     serializer_class = ProductSerializer
+
+#     def get_queryset(self, *args, **kwargs):
+#         queryset = Product.objects.all()
+
+#         return queryset
+
+
+
+
 
 class  ProductImageset(APIView):
     permission_classes = (AllowAny, )
