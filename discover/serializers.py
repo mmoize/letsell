@@ -37,12 +37,11 @@ class Product_ImageSerializer(serializers.ModelSerializer):
 
     url = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True, lookup_field="productimage")
     product = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, source="product_user" )
-    products_id = serializers.CharField(source='product_id', read_only=True)
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = ProductImage
-        fields =['id', 'product','url','pk', 'products_id', 'image', 'created', 'user']
+        fields =['id', 'product','url', 'image', 'created', 'user']
         extra_kwargs = { 
             'product': {'required': False},
             'products_id': {'required': False},
@@ -54,7 +53,7 @@ class Product_ImageSerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.HyperlinkedModelSerializer):
     #url = serializers.HyperlinkedIdentityField(view_name="discover:productimage-detail",  lookup_field="pk")
     url = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True, lookup_field="productimage")
-    product = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, source="product")
+    product = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, source="user_product")
     products_id = serializers.CharField(source='product_id', read_only=True)
     user = UserSerializer(read_only=True)
 
