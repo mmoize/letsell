@@ -86,30 +86,44 @@ class MessageDetailView(ModelViewSet):
         return context
 
 
-# class MessagelistView(ModelViewSet):
-#     permission_classes = (IsAuthenticated,)
-#     serializer_class = MessageSerializers
-#     queryset = Message.objects.all()
-
-#     def get_serializer_context(self):
-#         context = super(  MessagelistView, self).get_serializer_context()
-#         context['outbox'] = Message.objects.filter(sender=self.request.user.id).order_by('-created')  
-#         context['inbox'] = Message.objects.filter(recipient=self.request.user.id).order_by('-created')        
-#         return context
-
 class MessagelistView(ModelViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = MessageSerializers
-    queryset = Message.objects.all()
 
-    def  get_queryset(self):
-        context = super(  MessagelistView, self).get_queryset()
-        context['outbox'] = Message.objects.filter(sender=self.request.user.id).order_by('-created')  
-        context['inbox'] = Message.objects.filter(recipient=self.request.user.id).order_by('-created')        
-        return context
+    def get_queryset(self):
+        data_ =  self.request.data
+        _referenced_post = data_['referenced_post']
+        _recipient = data_['recipient']
+        print('this is request', data_)
+        messages = Message.objects.filter(referenced_post=_referenced_post, recipient=_recipient,  sender=self.request.user).order_by("-created")
+
+        return messages
+
+    # def get_queryset(self):
+    #     context = super(  MessagelistView, self).get_queryset()
+    #     context['outbox'] = Message.objects.filter(sender=self.request.user.id).order_by('-created')  
+    #     context['inbox'] = Message.objects.filter(recipient=self.request.user.id).order_by('-created')        
+    #     return context
+
+# class MessagelistView(ModelViewSet):
+#     queryset = Message.objects.all()
+#     permission_classes = (IsAuthenticated,)
+#     serializer_class = MessageSerializers
 
 
-class ProductsView(APIView):
+#     def  get(self, request, format=None):
+
+
+#         print('ths is queryset', queryset)
+
+
+
+#         serializer = MessageSerializers(queryset)  
+#         serializer.is_valid()   
+#         return Response(serializer.data)
+
+
+class InboxView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = MessageSerializers
     queryset = Message.objects.all()
@@ -121,41 +135,49 @@ class ProductsView(APIView):
         data_outbox = list(context['outbox'])
         data_inbox = list(context['inbox'])
         print('outbox', data_outbox)
-        print('inbox', data_inbox)
+        print('inbox', len(data_inbox))
         cont_outbox = {}
         re_cont = []
 
         for i in data_outbox:
+             message_id = i.id
              id = i.sender.id
              re_id = i.recipient.id
              p_id = i.referenced_post.id
+             created_at = i.created
              cont_outbox.update({
                  'sender': id,
                  'recipient': re_id,
                  'subject': i.subject,
                  'referenced_post': p_id,
-                 'body': i.body
+                 'body': i.body,
+                 'message_id': message_id,
              })
              serializer = MessageSerializers(data=cont_outbox)
              serializer.is_valid()
-             re_cont.append({'outbox': serializer.data})
+             re_cont.append({'outbox': serializer.data, 'id': message_id, 'created':created_at})
+   
              cont_outbox = {}
 
         cont_inbox = {}
         for i in data_inbox:
+             message_id = i.id
+             print('this is message_id', message_id)
              id = i.sender.id
              re_id = i.recipient.id
              p_id = i.referenced_post.id
+             created_at = i.created
              cont_inbox.update({
                  'sender': id,
                  'recipient': re_id,
                  'subject': i.subject,
                  'referenced_post': p_id,
-                 'body': i.body
+                 'body': i.body,
+                 'message_id': message_id,
              })
              serializer = MessageSerializers(data=cont_inbox)
              serializer.is_valid()
-             re_cont.append({'inbox': serializer.data})
+             re_cont.append({'inbox': serializer.data, 'id': message_id, 'created':created_at})
              cont = {}
         
 
