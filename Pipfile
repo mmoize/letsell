@@ -27,6 +27,8 @@ django-geojson = "*"
 django-model-utils = "*"
 django-taggit = "*"
 django-taggit-serializer = "*"
+django-background-task = "*"
+drf-extensions = "*"
 
 [requires]
 python_version = "3.7"

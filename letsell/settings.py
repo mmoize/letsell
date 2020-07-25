@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'djgeojson',
     'taggit_serializer',
     'taggit',
-    'messaging.apps.MessagingConfig',
     'chat.apps.ChatConfig',
 ]
 
