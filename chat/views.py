@@ -101,7 +101,7 @@ class LobbyView(AuthView, APIView):
 
     def get(self, request, format=None):
         result = []
-        data = self.populate(Room.objects.all())
+        data = self.populate(Room.objects.filter(members=self.request.user))
         return Response(data)
 
 class MessageView(AuthView, APIView):

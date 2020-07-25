@@ -6,7 +6,7 @@ from discover.models import Post
 
 class  Room(TimeStampedModel):
     title = models.CharField(max_length=200 )
-    createdBy = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, default=00)
+    members = models.ManyToManyField(User, verbose_name="Members", blank=True, default=00)
 
     def get_absolute_url(self):
  

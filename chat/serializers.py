@@ -128,13 +128,17 @@ class MessagexSerializer(serializers.HyperlinkedModelSerializer):
         post_ref = Post.objects.get(id=ref_post)
         print('this is rooms members ref', ref_post)
         members_recipient = User.objects.get(id=recipient_id)
-        members_creater = self.context['request'].user
 
-        room_obj = Room.objects.get_or_create(
+        members_creater = self.context['request'].user.id
+
+        room_obj= Room.objects.get_or_create(
             id = data['id'],
             title=data['title'],
+            # members = recipient_id, members_creater
 
         )
+        room_obj[0].members.add(recipient_id)
+        room_obj[0].members.add(members_creater)
         room_instance = room_obj[0]
         print('this is room', )
 
