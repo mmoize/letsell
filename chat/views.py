@@ -194,7 +194,7 @@ class PostMessagexist(ModelViewSet):
 
 
     def get_serializer_context(self):
-        context = super(PostMessage, self).get_serializer_context()
+        context = super(PostMessagexist, self).get_serializer_context()
         print('cont', self.request.data)
 
 

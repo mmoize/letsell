@@ -132,15 +132,15 @@ class MessagexSerializer(serializers.HyperlinkedModelSerializer):
 
         members_creater = self.context['request'].user.id
 
-        room_obj= Room.objects.get_or_create(
+        room_obj= Room.objects.create(
             # id = data['id'],
             # title=data['title'],
             # members = recipient_id, members_creater
 
         )
-        room_obj[0].members.add(recipient_id)
-        room_obj[0].members.add(members_creater)
-        room_instance = room_obj[0]
+        room_obj.members.add(recipient_id)
+        room_obj.members.add(members_creater)
+        room_instance = room_obj
         print('this is room', )
 
         
@@ -152,6 +152,7 @@ class MessagexSerializer(serializers.HyperlinkedModelSerializer):
             message = validated_data['message'],
             room = room_instance
         )
+        
 
         
         return message_obj   
