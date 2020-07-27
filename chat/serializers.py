@@ -94,9 +94,11 @@ class RoomsSerializer(serializers.ModelSerializer):
 
 class RooomSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
+    recipient = UserSerializer(read_only=True)
+    referenced_post_set  = PostSerializer(read_only=True)
     class Meta:
         model = Message
-        fields = ('id', 'message', 'sender')
+        fields = ('id', 'message', 'sender', 'recipient ', 'referenced_post_set ')
 
 
 
