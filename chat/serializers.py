@@ -88,17 +88,19 @@ class LobbySerializer(serializers.ModelSerializer):
         fields = ('title', 'id', 'members')
 
 class RoomsSerializer(serializers.ModelSerializer):
+    members = UserSerializer(read_only=True, many=True)
     class Meta:
         model = Room
-        fields = ('id', 'title')
+        fields = ('id', 'title', 'members')
 
 class RooomSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
     recipient = UserSerializer(read_only=True)
     referenced_post  = PostSerializer(read_only=True)
+    room = RoomsSerializer(read_only=True)
     class Meta:
         model = Message
-        fields = ('id', 'message', 'sender', 'recipient', 'referenced_post')
+        fields = ('id', 'message', 'sender', 'recipient', 'referenced_post', 'room')
 
 
 
