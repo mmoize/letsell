@@ -82,6 +82,7 @@ class MessagySerializer(GetUserMixin, serializers.ModelSerializer):
 
 
 class LobbySerializer(serializers.ModelSerializer):
+    members = UserSerializer(read_only=True, many=True)
     class Meta:
         model = Room
         fields = ('title', 'id', 'members')
@@ -117,7 +118,7 @@ class MessagexSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Message
-        fields = ('id', 'message', 'recipient', 'room_set', 'sender', 'referenced_post_set')
+        fields = ('id', 'message', 'recipient', 'room_set', 'sender', 'referenced_post_set', 'created')
     
     
     def create(self, validated_data):
