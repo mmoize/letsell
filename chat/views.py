@@ -64,7 +64,7 @@ class RoomView(AuthView, APIView):
         room = get_object_or_404(Room, pk=1)
         print('hi doon',room)
         page = int(page)
-        queryset = Message.objects.filter(room=room ).order_by('-id')
+        queryset = Message.objects.filter(room=room ).order_by('-created')
         print('hi doony',self.request.data['id'])
         paginator = Paginator(queryset, 10, allow_empty_first_page=True)
         try:
