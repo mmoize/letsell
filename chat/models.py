@@ -5,7 +5,7 @@ from discover.models import Post
 
 
 class  Room(TimeStampedModel):
-    title = models.CharField(max_length=200 )
+    title = models.CharField(max_length=200, blank=True )
     members = models.ManyToManyField(User, verbose_name="Members", blank=True, default=00)
 
     def get_absolute_url(self):
@@ -15,7 +15,7 @@ class  Room(TimeStampedModel):
 
 
     def __unicode__(self):
-        return self.title
+        return self.id
  
 
 class Message(TimeStampedModel):
