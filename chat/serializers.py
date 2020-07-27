@@ -133,7 +133,7 @@ class MessagexSerializer(serializers.HyperlinkedModelSerializer):
         members_creater = self.context['request'].user.id
 
         room_obj= Room.objects.get_or_create(
-            id = data['id'],
+            # id = data['id'],
             title=data['title'],
             # members = recipient_id, members_creater
 
