@@ -98,7 +98,7 @@ class RooomSerializer(serializers.ModelSerializer):
     referenced_post_set  = PostSerializer(read_only=True)
     class Meta:
         model = Message
-        fields = ('id', 'message', 'sender', 'recipient ', 'referenced_post_set ')
+        fields = ('id', 'message', 'sender', 'recipient', 'referenced_post_set')
 
 
 
