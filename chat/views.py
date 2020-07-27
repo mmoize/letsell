@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from authentication.models import User
 from rest_framework.generics import RetrieveAPIView, UpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import     MessageSerializers, MessagingSerializer, RoomsSerializer, LobbySerializer, RooomSerializer, MessagexSerializer, RoomxSerializer
+from .serializers import     MessageSerializers, MessagingSerializer, MessagexistSerializer, RoomsSerializer, LobbySerializer, RooomSerializer, MessagexSerializer, RoomxSerializer
 from rest_framework.viewsets import ModelViewSet
 from discover.models import Post
 from rest_framework.response import Response
@@ -140,6 +140,54 @@ class PostMessage(ModelViewSet):
     permission_classes = (IsAuthenticated,)  # you are here
     queryset = Message.objects.all()
     serializer_class = MessagexSerializer
+    parser_classes = [MultipartJsonParser, JSONParser,]
+
+
+
+
+    def get_serializer_context(self):
+        context = super(PostMessage, self).get_serializer_context()
+        print('cont', self.request.data)
+
+
+        if len(self.request.data) > 0:
+            context.update({
+                'message_info': self.request.data
+            })
+
+        return context
+
+    def create(self, request, id, *args, **kwargs):
+
+
+        # try:
+        #     PostImage_serializer = ProductImageSerializer(data=request.FILES)
+        #     PostImage_serializer.is_valid(raise_exception=True)
+        # except Exception:
+        #     raise NotAcceptable(
+
+        #         detail={
+        #             'message': 'upload a valid image. The file you uploaded was '
+        #                         'neither not an image or a corrupted image.'
+        #         }, code=406
+        #     )
+
+        serializer = self.get_serializer(data=request.data)
+
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        print('this is pre-save serializery', serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+class PostMessagexist(ModelViewSet):
+    # Create view for Category objects
+
+    permission_classes = (IsAuthenticated,)  # you are here
+    queryset = Message.objects.all()
+    serializer_class = MessagexistSerializer
     parser_classes = [MultipartJsonParser, JSONParser,]
 
 

@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_extensions.routers import NestedRouterMixin
 
 from .views import  PostMessage
-from .views import RoomView, LobbyView,  MainView
+from .views import RoomView, LobbyView,  MainView, PostMessagexist
 from . import views
 
 
@@ -22,6 +22,7 @@ urlpatterns = [
     path('postmessagex/', PostMessage.as_view({'post': 'create'}), name='message_post'),
     # posting message should include: (message, title, ref-post, recipient)
     path('postmessagex/<int:id>', PostMessage.as_view({'post': 'create'}), name='message_post'),
+    path('postmessager/<int:id>', PostMessagexist.as_view({'post': 'create'}), name='message_post'),
 
 ]
 

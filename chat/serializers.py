@@ -156,7 +156,51 @@ class MessagexSerializer(serializers.HyperlinkedModelSerializer):
         
         return message_obj   
         
+class MessagexistSerializer(serializers.HyperlinkedModelSerializer):
+    sender = UserSerializer(read_only=True)
+    recipient = UserSerializer(read_only=True)
+    referenced_post_set  = PostSerializer(read_only=True)
+    room_set =RoomxSerializer(read_only=True)
 
+    class Meta:
+        model = Message
+        fields = ('id', 'message', 'recipient', 'room_set', 'sender', 'referenced_post_set', 'created')
+    
+    
+    def create(self, validated_data):
+
+        data = self.context['message_info']
+        recipient_id = data['recipient']
+        ref_post = data['referenced_post']
+        post_ref = Post.objects.get(id=ref_post)
+        print('this is rooms members ref', ref_post)
+        members_recipient = User.objects.get(id=recipient_id)
+
+        members_creater = self.context['request'].user.id
+
+        room_obj= Room.objects.get_or_create(
+            id = data['id'],
+            # title=data['title'],
+            # members = recipient_id, members_creater
+
+        )
+        room_obj[0].members.add(recipient_id)
+        room_obj[0].members.add(members_creater)
+        room_instance = room_obj[0]
+        print('this is room', )
+
+        
+
+        message_obj = Message.objects.create(
+            sender = self.context['request'].user,
+            recipient = members_recipient,
+            referenced_post = post_ref,
+            message = validated_data['message'],
+            room = room_instance
+        )
+
+        
+        return message_obj   
 
 
         
