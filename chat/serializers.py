@@ -84,7 +84,7 @@ class MessagySerializer(GetUserMixin, serializers.ModelSerializer):
 class LobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = ('title',)
+        fields = ('title', 'id', 'members')
 
 class RoomsSerializer(serializers.ModelSerializer):
     class Meta:
