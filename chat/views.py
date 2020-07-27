@@ -52,9 +52,9 @@ class RoomView(AuthView, APIView):
             data = ser.data
             newData = {}
             if sender_id == self.request.user.id:
-                newData['data'] = ({'msg_data': data, 'sent':True})
+                newData['data'] = ({'msg_data': data, 'sent':True, 'received':False})
             elif sender_id != self.request.user.id:
-                newData['data'] = ({'msg_data':data, 'received': True})
+                newData['data'] = ({'msg_data':data, 'received': True, 'sent':False,})
             print('this is msg', newData)
             #data['children'] = self.message_tree(msg)
             
