@@ -17,6 +17,8 @@ from rest_framework import status, generics
 from django.shortcuts import get_list_or_404, get_object_or_404
 from core.renderers import CoreJSONRenderer
 from rest_framework.generics import RetrieveAPIView, UpdateAPIView
+from fcm_django.models import FCMDevice
+from push_notifications.models import APNSDevice, GCMDevice
 
 from discover.models import (
     Category,
@@ -106,9 +108,19 @@ def Post_list(request):
     List all code snippets, or create a new snippet.
     """
     if request.method == 'GET':
+
+        device = GCMDevice.objects.all()
+        print('this is another pus', device)
+        
+        device.send_message("This is a message", time_to_live=3600)
+
+
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+
 
 class PostDetailView(ModelViewSet):
     permission_classes = (IsAuthenticated, )

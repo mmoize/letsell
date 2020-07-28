@@ -48,13 +48,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_login_history',
     'storages',
-    # 'store.apps.StoreConfig',
     'discover.apps.DiscoverConfig',
     'django_extensions',
     'djgeojson',
     'taggit_serializer',
     'taggit',
     'chat.apps.ChatConfig',
+    'push_notifications',
+    'fcm_django',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,7 @@ REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'authentication.backends.JWTAuthentication',
+        
     ),
     'DEFAULT_PERMISSION_CLASSES': (
       'authentication.backends.JWTAuthentication',
@@ -179,3 +181,30 @@ CORS_ORIGIN_WHITELIST = [
     'https://localhost',
 
 ]
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "FCM_API_KEY": "AAAA9MRVg6w:APA91bHGTgcBE8pXhqI5VwJc36ojLpI0g1Q_JtvvsRjx5-ScZO9h5TDkc1w2niHuzqeuhexw2xzA9q8RAeFDzfHln6vwEUyPrHIxPUJNUDh9cDFgrF7ov2oukUCkvVGYejdIazJaEO08",
+        
+
+        # "GCM_API_KEY": "[your api key]",
+        # "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
+        # "APNS_TOPIC": "com.example.push_test",
+        # "WNS_PACKAGE_SECURITY_ID": "[your package security id, e.g: 'ms-app://e-3-4-6234...']",
+        # "WNS_SECRET_KEY": "[your app secret key, e.g.: 'KDiejnLKDUWodsjmewuSZkk']",
+        # "WP_PRIVATE_KEY": "/path/to/your/private.pem",
+        # "WP_CLAIMS": {'sub': "mailto: development@example.com"}
+}
+
+
+FCM_DJANGO_SETTINGS = {
+        # "APP_VERBOSE_NAME": "[string for AppConfig's verbose_name]",
+         # default: _('FCM Django')
+        "FCM_SERVER_KEY": "AAAA9MRVg6w:APA91bHGTgcBE8pXhqI5VwJc36ojLpI0g1Q_JtvvsRjx5-ScZO9h5TDkc1w2niHuzqeuhexw2xzA9q8RAeFDzfHln6vwEUyPrHIxPUJNUDh9cDFgrF7ov2oukUCkvVGYejdIazJaEO08",
+         # true if you want to have only one active device per registered user at a time
+         # default: False
+        "ONE_DEVICE_PER_USER": False,
+         # devices to which notifications cannot be sent,
+         # are deleted upon receiving error response from FCM
+         # default: False
+        "DELETE_INACTIVE_DEVICES": False,
+}

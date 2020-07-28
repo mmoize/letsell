@@ -29,6 +29,9 @@ django-taggit-serializer = "*"
 django-background-task = "*"
 drf-extensions = "*"
 boto3 = "*"
+django-push-notifications = "*"
+pyfcm = "*"
+fcm-django = "*"
 
 [requires]
 python_version = "3.7"

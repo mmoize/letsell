@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
+from push_notifications.api.rest_framework import GCMDeviceAuthorizedViewSet
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,4 +24,6 @@ urlpatterns = [
     path('api/', include('accounts.urls', namespace='accounts')),
     path('api/', include('discover.urls', namespace='discover')),
     path('api/', include('chat.urls', namespace='chat')),
+    path('api/devices/', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
+    path('api/devicex/', GCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
 ]
