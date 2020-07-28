@@ -32,6 +32,8 @@ boto3 = "*"
 django-push-notifications = "*"
 pyfcm = "*"
 fcm-django = "*"
+pywebpush = "*"
+py-vapid = "*"
 
 [requires]
 python_version = "3.7"

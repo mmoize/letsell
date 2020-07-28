@@ -109,10 +109,10 @@ def Post_list(request):
     """
     if request.method == 'GET':
 
-        device = WebPushDevice.objects.all()
+        device = GCMDevice.objects.all()
         print('this is another pus', device)
         
-        device.send_message("This is a message", time_to_live=3600)
+        device.send_message("This is a message")
 
 
         posts = Post.objects.all()
