@@ -18,7 +18,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from core.renderers import CoreJSONRenderer
 from rest_framework.generics import RetrieveAPIView, UpdateAPIView
 from fcm_django.models import FCMDevice
-from push_notifications.models import APNSDevice, GCMDevice
+from push_notifications.models import APNSDevice, GCMDevice,  WebPushDevice
 
 from discover.models import (
     Category,
@@ -109,7 +109,7 @@ def Post_list(request):
     """
     if request.method == 'GET':
 
-        device = GCMDevice.objects.all()
+        device = WebPushDevice.objects.all()
         print('this is another pus', device)
         
         device.send_message("This is a message", time_to_live=3600)
