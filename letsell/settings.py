@@ -183,7 +183,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-        "FCM_API_KEY": "AAAA9MRVg6w:APA91bHGTgcBE8pXhqI5VwJc36ojLpI0g1Q_JtvvsRjx5-ScZO9h5TDkc1w2niHuzqeuhexw2xzA9q8RAeFDzfHln6vwEUyPrHIxPUJNUDh9cDFgrF7ov2oukUCkvVGYejdIazJaEO08",
+        "FCM_API_KEY": "AAAAGPLtpSQ:APA91bFEKAmoNBK7KYE-gbJmxJsDl259v7sOIbe-rAbTf_1J38BAwaxQaU1-RUx26bloQeOMZ8KFBszST-kVypY5fhFTH3s6F8zv8nptORNmMBv0Qa9SM5e7n3RMakeUcPAaWkNKJkct",
         
 
         # "GCM_API_KEY": "[your api key]",
@@ -199,7 +199,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
 FCM_DJANGO_SETTINGS = {
         # "APP_VERBOSE_NAME": "[string for AppConfig's verbose_name]",
          # default: _('FCM Django')
-        "FCM_SERVER_KEY": "AAAA9MRVg6w:APA91bHGTgcBE8pXhqI5VwJc36ojLpI0g1Q_JtvvsRjx5-ScZO9h5TDkc1w2niHuzqeuhexw2xzA9q8RAeFDzfHln6vwEUyPrHIxPUJNUDh9cDFgrF7ov2oukUCkvVGYejdIazJaEO08",
+        "FCM_SERVER_KEY": "AAAAGPLtpSQ:APA91bFEKAmoNBK7KYE-gbJmxJsDl259v7sOIbe-rAbTf_1J38BAwaxQaU1-RUx26bloQeOMZ8KFBszST-kVypY5fhFTH3s6F8zv8nptORNmMBv0Qa9SM5e7n3RMakeUcPAaWkNKJkct",
          # true if you want to have only one active device per registered user at a time
          # default: False
         "ONE_DEVICE_PER_USER": False,
