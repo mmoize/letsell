@@ -179,6 +179,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://101.114.183.81',
     'http://localhost',
     'https://localhost',
+    'https://fleek-market.web.app'
 
 ]
 
