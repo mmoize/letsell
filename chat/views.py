@@ -16,7 +16,7 @@ from authentication.serializers import UserSerializer
 from rest_framework.parsers import JSONParser
 from django.http import Http404
 from rest_framework import generics, permissions, viewsets
-from rest_framework_extensions.mixins import NestedViewSetMixin
+
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
 from .utils import MultipartJsonParser
@@ -27,7 +27,7 @@ from rest_framework.exceptions import NotAcceptable
 
 
 
-class RoomViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+class RoomViewSet( viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RooomSerializer
 
