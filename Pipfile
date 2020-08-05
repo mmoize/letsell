@@ -35,7 +35,6 @@ fcm-django = "*"
 pywebpush = "*"
 py-vapid = "*"
 django-resized = "*"
-botocore = "*"
 
 [requires]
 python_version = "3.7"
