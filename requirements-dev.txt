@@ -1,7 +1,6 @@
 apns2==0.7.1
 asgiref==3.2.10
 boto3==1.14.35
-botocore==1.17.35
 certifi==2020.6.20
 cffi==1.14.1
 chardet==3.0.4
