@@ -106,7 +106,7 @@ def Product_image_path(instance, filename):
 
 class ProductImage(TimeStampedModel):
     product= models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ResizedImageField(size=[500, 450],upload_to= Product_image_path)
+    image = ResizedImageField(size=[500, 450],upload_to= Product_image_path)
     user = models.ForeignKey(User, default="1", on_delete=models.CASCADE)
 
     def __str__(self):
