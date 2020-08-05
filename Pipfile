@@ -34,6 +34,7 @@ pyfcm = "*"
 fcm-django = "*"
 pywebpush = "*"
 py-vapid = "*"
+django-resized = "*"
 
 [requires]
 python_version = "3.7"

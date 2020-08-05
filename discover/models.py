@@ -17,6 +17,7 @@ from core.models import RandomSlugModel
 from authentication.models import User
 from django.utils.translation import ugettext_lazy 
 from taggit.managers import TaggableManager
+from django_resized import ResizedImageField
 
 class Category(models.Model):
 
@@ -105,7 +106,7 @@ def Product_image_path(instance, filename):
 
 class ProductImage(TimeStampedModel):
     product= models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to= Product_image_path)
+    image = models.ResizedImageField(size=[500, 450],upload_to= Product_image_path)
     user = models.ForeignKey(User, default="1", on_delete=models.CASCADE)
 
     def __str__(self):
