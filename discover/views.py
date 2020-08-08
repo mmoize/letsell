@@ -174,13 +174,26 @@ class CategoryCreateView(CreateAPIView):
 
 #----------------------------------end-Category
 
+class UserProductView(ModelViewSet):
+    # Create view for Category objects
+
+    permission_classes = (IsAuthenticated,) 
+
+    serializer_class = ProductSerializer
+    parser_classes = [MultipartJsonParser, JSONParser,]
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = Product.objects.filter(user = self.request.user)
+
+        return queryset
+
 @csrf_exempt
 def Product_list(request):
     """
     List all code snippets, or create a new snippet.
     """
     if request.method == 'GET':
-        product = Product.objects.all()
+        product =  Product.objects.all() 
         serializer = ProductSerializer(product, many=True)
         return JsonResponse(serializer.data, safe=False)
 
