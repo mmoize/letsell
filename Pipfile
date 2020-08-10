@@ -36,6 +36,7 @@ pywebpush = "*"
 py-vapid = "*"
 django-resized = "*"
 botocore = "*"
+asgiref = "*"
 
 [requires]
 python_version = "3.7"

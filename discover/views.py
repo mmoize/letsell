@@ -174,9 +174,17 @@ class CategoryCreateView(CreateAPIView):
 
 #----------------------------------end-Category
 
-class UserProductView(ModelViewSet):
-    # Create view for Category objects
+class  UserDeleteProductView(APIView):
+    permission_classes = (IsAuthenticated,) 
 
+    def delete(self, request, pk, format=None):
+        queryset = Product.objects.filter(user = self.request.user.id, pk=pk ).delete()
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class UserProductView(ModelViewSet):
     permission_classes = (IsAuthenticated,) 
 
     serializer_class = ProductSerializer
@@ -333,10 +341,6 @@ class  ProductImageset(APIView):
         print('hello there',productimages)
         return Response(productimages)
         
-
-
-         
-#-------------------------------end-Product
 
 #-------------------------------end-Product
 

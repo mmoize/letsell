@@ -16,7 +16,8 @@ from discover.views import (
     Post_DetailView,
     ProductImageViewSet,
     ProductImageset,
-    UserProductView
+    UserProductView,
+    UserDeleteProductView
 )
   
 
@@ -40,12 +41,15 @@ urlpatterns = [
         view_categories,
         name='view_categories'
     ),
-    #------------------------end-categories
+    #------------------------end-categories      \
+
+
     path(
         'products/',
         ProductCreateView.as_view({'post': 'create'}),
         name='products'
     ),
+    path('userdeleteproductview/<int:pk>', UserDeleteProductView.as_view(), name='delete_product_view-detail'),
     path('userproductview/', UserProductView.as_view({'get': 'list'}), name='productview-detail'),
     path('viewproduct/', Product_list, name='products-detail'),
     path('viewproductimage/', ProductImageViewSet.as_view({'get': 'list'}), name='productimage-detail'),
