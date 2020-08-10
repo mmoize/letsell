@@ -17,7 +17,8 @@ from discover.views import (
     ProductImageViewSet,
     ProductImageset,
     UserProductView,
-    UserDeleteProductView
+    UserDeleteProductView,
+    UserPostView
 )
   
 
@@ -67,6 +68,7 @@ urlpatterns = [
         name='post_view'
     ),
     path('postviewer/', PostView),
+    path('userpostview/', UserPostView.as_view({'get': 'list'}), name='userpostview-detail'),
     
     path('viewpost/', Post_list, name='products'),
     

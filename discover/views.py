@@ -45,7 +45,7 @@ from discover.serializers import (
 class PostCreatView(ModelViewSet):
     # Create view for Category objects
 
-    permission_classes = (IsAuthenticated,)  # you are here
+    permission_classes = (IsAuthenticated,)  
     queryset = Category.objects.all()
     serializer_class = PostSerializer
     parser_classes = [MultipartJsonParser, JSONParser,]
@@ -150,6 +150,14 @@ class Post_DetailView(APIView):
         serializer = PostSerializer(queryset)
 
         return Response(queryset)
+
+class UserPostView(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PostSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = Post.objects.filter(owner = self.request.user.id)
+        return queryset
 
 #----------------------------------end-post
 class CategoryView(ModelViewSet):
