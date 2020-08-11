@@ -159,6 +159,14 @@ class UserPostView(ModelViewSet):
         queryset = Post.objects.filter(owner = self.request.user.id)
         return queryset
 
+class  UserDeletePostView(APIView):
+    permission_classes = (IsAuthenticated,) 
+
+    def delete(self, request, pk, format=None):
+        queryset = Post.objects.filter(owner = self.request.user.id, pk=pk ).delete()
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 #----------------------------------end-post
 class CategoryView(ModelViewSet):
     permission_classes = (AllowAny,)
