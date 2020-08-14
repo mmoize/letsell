@@ -37,6 +37,7 @@ py-vapid = "*"
 django-resized = "*"
 botocore = "*"
 asgiref = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.7"

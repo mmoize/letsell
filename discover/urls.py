@@ -20,6 +20,7 @@ from discover.views import (
     UserDeleteProductView,
     UserPostView,
     UserDeletePostView,
+    Prodfilterview
 )
   
 
@@ -45,12 +46,14 @@ urlpatterns = [
     ),
     #------------------------end-categories      \
 
-
+    path('viewpostfilter/<int:category>', Prodfilterview.as_view(), name='products-detail'),
     path(
+       
         'products/',
         ProductCreateView.as_view({'post': 'create'}),
         name='products'
     ),
+   
     path('userdeleteproductview/<int:pk>', UserDeleteProductView.as_view(), name='delete_product_view-detail'),
     path('userproductview/', UserProductView.as_view({'get': 'list'}), name='productview-detail'),
     path('viewproduct/', Product_list, name='products-detail'),

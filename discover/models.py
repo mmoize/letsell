@@ -19,19 +19,33 @@ from django.utils.translation import ugettext_lazy
 from taggit.managers import TaggableManager
 from django_resized import ResizedImageField
 
-class Category(models.Model):
 
-    
-    description = models.CharField(max_length=50, verbose_name=ugettext_lazy('Description'))
+class Category(models.Model):
+    name = models.CharField(max_length=200, default='other')
+    slug = models.SlugField(default="other")
+    parent = models.ForeignKey('self',blank=True, null=True ,related_name='children', on_delete=models.CASCADE)
+
 
 
     class Meta:
+        #enforcing that there can not be two categories under a parent with same slug
+        
+        # __str__ method elaborated later in post.  use __unicode__ in place of
+        
+        # __str__ if you are using python 2
 
-        verbose_name = ugettext_lazy('Category')
-        verbose_name_plural = ugettext_lazy('Categories')
+        unique_together = ('slug', 'parent',)    
+        verbose_name_plural = "categories"     
 
-    def __str__(self):
-        return self.description
+    def __str__(self):                           
+        full_path = [self.name]                  
+        k = self.parent
+        while k is not None:
+            full_path.append(k.name)
+            k = k.parent
+        return ' -> '.join(full_path[::-1])
+
+
     
 
 class Tags(models.Model):
@@ -48,8 +62,8 @@ class ProductBase(TimeStampedModel):
     description = models.TextField(verbose_name=ugettext_lazy('Description'))
     # image = models.ImageField(verbose_name=ugettext_lazy('Image'), upload_to=None, height_field=None, width_field=None, max_length=None)
     price = models.DecimalField(verbose_name=ugettext_lazy('Price'), max_digits=10, decimal_places=3)
-    category = models.CharField(verbose_name=ugettext_lazy('Category'), max_length=50)
-    # category = models.ForeignKey(Category, verbose_name=ugettext_lazy('Category'), on_delete=models.CASCADE)
+    
+
 
     class Meta:
         abstract = True
@@ -73,6 +87,8 @@ class Product(ProductBase):
     user = models.ForeignKey(User, default=1,  on_delete=models.CASCADE, verbose_name=ugettext_lazy('User'))
     tags = models.ManyToManyField(Tags, related_name='tags', blank=True)
     taggit = TaggableManager(blank=True)
+    category = models.ManyToManyField(Category, blank=True)
+    
     # returns the entire product endpoint(product-details endpoints plus slug field)
 
     # def get_absolute_url(self):
@@ -93,11 +109,18 @@ class Product(ProductBase):
                 self.slug
             )
         
-
+    def get_cat_list(self):
+        k = self.category # for now ignore this instance method
+        
+        breadcrumb = ["dummy"]
+        while k is not None:
+            breadcrumb.append(k.slug)
+            k = k.parent
+        for i in range(len(breadcrumb)-1):
+            breadcrumb[i] = '/'.join(breadcrumb[-1:i-1:-1])
+        return breadcrumb[-1:0:-1]
         
        
-            
-    
 
 
 

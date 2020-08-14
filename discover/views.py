@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Q
 
+from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.generics import CreateAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -19,7 +20,10 @@ from core.renderers import CoreJSONRenderer
 from rest_framework.generics import RetrieveAPIView, UpdateAPIView
 from fcm_django.models import FCMDevice
 from push_notifications.models import APNSDevice, GCMDevice,  WebPushDevice
+from rest_framework import generics
+from django.db.models import Q, Count
 
+import django_filters
 from discover.models import (
     Category,
     Product,
@@ -114,13 +118,13 @@ def Post_list(request):
         
         device.send_message("This is a message")
 
-
+        print('this is request', request)
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-
-
+  
+  
 
 class PostDetailView(ModelViewSet):
     permission_classes = (IsAuthenticated, )
@@ -167,16 +171,35 @@ class  UserDeletePostView(APIView):
         
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class Prodfilterview(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+
+        category = self.kwargs['category']
+        return Post.objects.filter(product__category=category)
+
 #----------------------------------end-post
 class CategoryView(ModelViewSet):
     permission_classes = (AllowAny,)
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+    queryset = None 
 
-    def get_queryset(self, *args, **kwargs):
-        col = Category.objects.all()
 
-        return col
+    def get_queryset(self):
+        context = super(CategoryView, self).get_queryset()
+   
+        product_set = context
+
+        return product_set
+
+
+
+    # def get_queryset(self, *args, **kwargs):
+    #     col = Category.objects.all()
+
+    #     return col
 
 
 class CategoryCreateView(CreateAPIView):
@@ -188,7 +211,10 @@ class CategoryCreateView(CreateAPIView):
     lookup_field = 'description' 
 
 
+
+
 #----------------------------------end-Category
+
 
 class  UserDeleteProductView(APIView):
     permission_classes = (IsAuthenticated,) 
@@ -197,6 +223,8 @@ class  UserDeleteProductView(APIView):
         queryset = Product.objects.filter(user = self.request.user.id, pk=pk ).delete()
         
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
 
 
 
@@ -218,6 +246,15 @@ def Product_list(request):
     """
     if request.method == 'GET':
         product =  Product.objects.all() 
+        serializer = ProductSerializer(product, many=True)
+        return JsonResponse(serializer.data, safe=False)
+@csrf_exempt
+def Product_listCategory(request, category):
+    """
+    List all code snippets, or create a new snippet.
+    """
+    if request.method == 'GET':
+        product =  Product.objects.filter(category=category)
         serializer = ProductSerializer(product, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -247,11 +284,14 @@ class ProductCreateView(ModelViewSet):
                 'included_images': self.request.FILES
             })
 
+            context.update({
+                'category_info': self.request.data
+            })
+
             # print('this is your context', self.request.data)
         return context
-        
-    def create(self, request, *args, **kwargs):
 
+    def create(self, request, *args, **kwargs):
 
         try:
             PostImage_serializer = ProductImageSerializer(data=request.FILES)
@@ -264,7 +304,7 @@ class ProductCreateView(ModelViewSet):
                                 'neither not an image or a corrupted image.'
                 }, code=406
             )
-
+        print('this is new request data', request.data)
         serializer = self.get_serializer(data=request.data)
         
         

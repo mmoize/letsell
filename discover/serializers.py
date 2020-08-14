@@ -15,17 +15,33 @@ from authentication.serializers import UserSerializer
 from taggit.models import Tag
 from taggit_serializer.serializers import (TagListSerializerField, TaggitSerializer)
 from django.forms import ImageField as DjangoImageField
-from rest_framework.exceptions import NotAcceptable   
+from rest_framework.exceptions import NotAcceptable  
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class SubCategorySerializer(serializers.ModelSerializer):
     """ Serializer for the Category model """
 
     class Meta:
         """ CategorySerializer's Meta class """
 
         model = Category
-        fields = '__all__'
+        fields =[ 'name','slug', 'parent', 'id']
+
+class RecursiveSerializer(serializers.ModelSerializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+class CategorySerializer(serializers.ModelSerializer):
+    """ Serializer for the Category model """
+    parent = SubCategorySerializer(read_only=True)
+    children = RecursiveSerializer(many=True, read_only=True)
+    class Meta:
+        """ CategorySerializer's Meta class """
+
+        model = Category
+        fields =[ 'name','slug', 'parent', 'children', 'id']
+
 
 class TagsSerializer(serializers.HyperlinkedModelSerializer):        
          
@@ -86,6 +102,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     tags = TagsSerializer( allow_null=True, many=True, read_only=True)
     user = UserSerializer(read_only=True)
     taggit = TagListSerializerField(allow_null=True, required=False)
+    category = CategorySerializer(allow_null=True, many=True, required=False)
     #product_image_set = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True)
     url = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, lookup_field="pk")
     #url = serializers.HyperlinkedIdentityField(view_name="discover:product-detail", read_only=True, )
@@ -103,30 +120,58 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
 
         
-        try:
+
+        data = self.context['category_info']
+        category_name = data['category_name']
+        category_slug = data['category_slug']
+        category_parent = data['category_parent']
+        parentcategoryDB = Category.objects.get(id = category_parent)
+        parentcategoryDic = parentcategoryDB
+        parentcategoryInstance = parentcategoryDic
+        #print('this parent category', parentcategoryInstance)
+
+        
+        category_obj = Category.objects.get_or_create(
+            name = category_name,
+            slug = category_slug,
+            parent = parentcategoryInstance,
+        )
+
+
+
+        
+
+        category_instance = category_obj[0]
+        
+        print('this is the category name0', category_instance)
+        product_obj = Product.objects.create(
+            title = validated_data['title'],
+            description = validated_data['description'],
+            price = validated_data['price'],
+            barcode = validated_data['barcode'],
+            #category = [category_instance, parentcategoryInstance],
+            slug = validated_data['slug'],
+            user = self.context['request'].user
+        )
+        product_obj.category.add(category_instance)
+        
+        product_obj.category.add(parentcategoryInstance)
+        # try:
+
+
             
-            product_obj = Product.objects.create(
-                title = validated_data['title'],
-                description = validated_data['description'],
-                price = validated_data['price'],
-                barcode = validated_data['barcode'],
-                category = validated_data['category'],
-                slug = validated_data['slug'],
-                user = self.context['request'].user
-            )
-
-            # if 'included_images' in self.context:
+        #     # if 'included_images' in self.context:
                 
-            #     images_data = self.context['included_images']
-            #     for i in images_data.getlist('image'):
-            #         print("another", i)
-            #         ProductImage.objects.create(product=product_obj, image=i,  user=self.context['request'].user)
+        #     #     images_data = self.context['included_images']
+        #     #     for i in images_data.getlist('image'):
+        #     #         print("another", i)
+        #     #         ProductImage.objects.create(product=product_obj, image=i,  user=self.context['request'].user)
 
-        except Exception:
-            raise NotAcceptable(
-                detail={
-                    'message': 'The request is not acceptable.'
-                }, code=406)
+        # except Exception:
+        #     raise NotAcceptable(
+        #         detail={
+        #             'message': 'The request is not acceptable.'
+        #         }, code=406)
 
 
 
