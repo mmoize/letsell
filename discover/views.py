@@ -171,12 +171,18 @@ class  UserDeletePostView(APIView):
         
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class Prodfilterview(generics.ListAPIView):
+class Postfilterview(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticated,)
     def get_queryset(self):
 
+
+
         category = self.kwargs['category']
+
+
+        prod = self.request.data
+
         return Post.objects.filter(product__category=category)
 
 #----------------------------------end-post
