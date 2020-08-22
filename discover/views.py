@@ -22,8 +22,12 @@ from fcm_django.models import FCMDevice
 from push_notifications.models import APNSDevice, GCMDevice,  WebPushDevice
 from rest_framework import generics
 from django.db.models import Q, Count
+from rest_framework.filters import SearchFilter, OrderingFilter 
+import rest_framework_filters as filters
 
-import django_filters
+
+
+
 from discover.models import (
     Category,
     Product,
@@ -46,9 +50,114 @@ from discover.serializers import (
 )
 
 
+
+
+
+class ProductFilter(filters.FilterSet):
+
+
+    class Meta:
+        model = Product
+        fields = {'title': ['exact', 'in', 'startswith'],
+                  'category__name': ['exact', 'in', 'startswith'],
+                  'price': ['exact', 'gt', 'lt']
+                 }
+
+
+
+
+
+
+
+
+
+class PostFilter(filters.FilterSet):
+    # Not overridden by `__all__`
+    #price__gt = filters.NumberFilter(field_name='price', lookup_expr='gt', label='Minimum price')
+    # product__title = filters.CharFilter(field_name='product__title',lookup_expr='exact',  label='product title')
+    #product__title = filters.CharFilter(field_name='product__title',lookup_expr='in',  label='product title')
+    product = filters.RelatedFilter( ProductFilter, field_name='product', queryset=Product.objects.all())
+
+    # price__gt = filters.NumberFilter(field_name='product__price', lookup_expr='gt', label='Minimum price')
+    # price__lt = filters.NumberFilter(field_name='product__price', lookup_expr='lt', label='Maxmum price')
+    # prod_title__startwith = filters.CharFilter(field_name='product__title', lookup_expr='startswith', label='product title')
+    # prod_title__exact = filters.CharFilter(field_name='product__title', lookup_expr='exact', label='product title')
+    # product__category = filters.CharFilter(field_name='product__category__name',lookup_expr=('startswith', 'exact', 'in') ,  label='product category')
+
+    class Meta:
+        model = Post
+        fields = {
+            'product': '__all__' ,
+           
+        }
+
+
+
+
+
+
+class PostSearchView(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    filter_class = PostFilter
+
+    # def get_queryset(self, *args, **kwargs):
+
+    #     queryset = Post.objects.all()
+
+    #     title__startswith = self.request.query_params.get('title__startswith', None)
+    #     title__in = self.request.query_params.get('title__in', None)
+    #     title__exact = self.request.query_params.get('title__exact', None)
+
+    #     category__startswith = self.request.query_params.get('category__startswith', None)
+    #     category__in = self.request.query_params.get('category__in', None)
+    #     category__exact = self.request.query_params.get('category__exact', None)
+
+    #     price__lt = self.request.query_params.get('price__lt', None)
+    #     price__gt = self.request.query_params.get('price__gt', None)
+    #     price__exact = self.request.query_params.get('price__exact', None)
+
+    #     if title__startswith is not None:
+    #         queryset = queryset.filter(product__title__startswith=title__startswith)
+    #     if title__in is not None:
+    #         queryset = queryset.filter(product__title__in=title__in)
+    #     if title__exact is not None:
+    #         queryset = queryset.filter(product__title__exact=title__exact)
+
+    #     if price__gt is not None:
+    #         queryset = queryset.filter(product__price__gt=price__gt)
+    #     if price__lt is not None:
+    #         queryset = queryset.filter(product__price__lt=price__lt)  
+    #     if price__exact is not None:
+    #         queryset = queryset.filter(product__price__exact=price__exact)  
+
+    #     if category__startswith is not None:
+    #         queryset = queryset.filter(product__category__startswith=category__startswith)
+    #     if category__in is not None:
+    #         queryset = queryset.filter(product__category__in=category__in)
+    #     if category__exact is not None:
+    #         queryset = queryset.filter(product__category__exact=category__exact)
+    
+    #     return queryset
+
+
+
+    
+
+class  SearchPost(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated,)
+    filter_backends = [PostFilter,]
+    queryset = Post.objects.all()
+
+
+
+
 class PostCreatView(ModelViewSet):
     # Create view for Category objects
-
+    
     permission_classes = (IsAuthenticated,)  
     queryset = Category.objects.all()
     serializer_class = PostSerializer

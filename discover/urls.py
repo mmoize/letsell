@@ -20,7 +20,9 @@ from discover.views import (
     UserDeleteProductView,
     UserPostView,
     UserDeletePostView,
-    Postfilterview
+    Postfilterview,
+    SearchPost,
+    PostSearchView
 )
   
 
@@ -29,6 +31,7 @@ view_categories = CategoryView.as_view({'get': 'list'})
 postcreateview = PostCreatView.as_view({'post': 'create'})
 postview = PostCreatView.as_view({'get': 'list'})
 postdetailview = PostDetailView.as_view({'get': 'list'})
+postSearchview = PostSearchView.as_view({'get': 'list'})
 
 
 app_name = 'discover'
@@ -52,7 +55,7 @@ urlpatterns = [
         'products/',
         ProductCreateView.as_view({'post': 'create'}),
         name='products'
-    ),
+    ), 
    
     path('userdeleteproductview/<int:pk>', UserDeleteProductView.as_view(), name='delete_product_view-detail'),
     path('userproductview/', UserProductView.as_view({'get': 'list'}), name='productview-detail'),
@@ -61,6 +64,7 @@ urlpatterns = [
     path('imageset/<int:id>/', ProductImageset.as_view(), name='imageset-detail'),
     #------------------------end-products
     path('viewpostfilter/<int:category>', Postfilterview.as_view(), name='post_category_filter-detail'),
+    path('viewpostsearch/', SearchPost.as_view(), name='post_category_filter-detail'),
     path(
         'postcreateview/<int:id>',
         postcreateview,
@@ -78,6 +82,7 @@ urlpatterns = [
     path('viewpost/', Post_list, name='products'),
     
     path('postdetail/<int:id>', postdetailview , name='postdetail'),
+     path('postsearchview/', postSearchview , name='postsearch'),
      
     path(
         'postdetails/',
