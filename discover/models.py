@@ -18,6 +18,7 @@ from authentication.models import User
 from django.utils.translation import ugettext_lazy 
 from taggit.managers import TaggableManager
 from django_resized import ResizedImageField
+from django.contrib.gis.db.models import PointField
 
 
 class Category(models.Model):
@@ -146,8 +147,7 @@ class ProductImage(TimeStampedModel):
 
 class Post(models.Model):
     owner = models.ForeignKey(User,  on_delete=models.CASCADE, verbose_name=ugettext_lazy('Owner'))
-    latitude = models.DecimalField(verbose_name=ugettext_lazy("Latitude"), max_digits=22, decimal_places=16, blank=True, null=True)
-    longitude = models.DecimalField(verbose_name=ugettext_lazy("Longitude"),max_digits=22, decimal_places=16, blank=True, null=True)
+    location = PointField(null=True, geography=True, blank=True, srid=4326, verbose_name='Location')
     product = models.ManyToManyField(Product, verbose_name=ugettext_lazy("Product"), blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

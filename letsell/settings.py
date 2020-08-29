@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 from decouple import config
 from dj_database_url import parse as dburl
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,6 +38,7 @@ AUTH_USER_MODEL = 'authentication.User'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.gis',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -57,6 +59,7 @@ INSTALLED_APPS = [
     'push_notifications',
     'fcm_django',
     'rest_framework_filters',
+    
 
 
    
@@ -99,9 +102,30 @@ WSGI_APPLICATION = 'letsell.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+# default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 
-DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl), }
+# DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl), }
+
+GDAL_LIBRARY_PATH = r'C:\\Users\\moise\\.virtualenvs\\letsell-TbkfrpJI\\Lib\site-packages\\osgeo\\gdal301.dll'
+if os.name == 'nt':
+    VENV_BASE = os.environ['VIRTUAL_ENV']
+    os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': config('DBPASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')

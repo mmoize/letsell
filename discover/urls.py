@@ -22,7 +22,8 @@ from discover.views import (
     UserDeletePostView,
     Postfilterview,
     SearchPost,
-    PostSearchView
+    PostSearchView,
+    PostLocation
 )
   
 
@@ -32,6 +33,7 @@ postcreateview = PostCreatView.as_view({'post': 'create'})
 postview = PostCreatView.as_view({'get': 'list'})
 postdetailview = PostDetailView.as_view({'get': 'list'})
 postSearchview = PostSearchView.as_view({'get': 'list'})
+postlocation = PostLocation.as_view({'get': 'list'})
 
 
 app_name = 'discover'
@@ -83,6 +85,7 @@ urlpatterns = [
     
     path('postdetail/<int:id>', postdetailview , name='postdetail'),
      path('postsearchview/', postSearchview , name='postsearch'),
+    path('postlocationview/', postlocation , name='postlocation'),
      
     path(
         'postdetails/',

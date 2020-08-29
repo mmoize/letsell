@@ -24,7 +24,10 @@ from rest_framework import generics
 from django.db.models import Q, Count
 from rest_framework.filters import SearchFilter, OrderingFilter 
 import rest_framework_filters as filters
-
+from django.contrib.gis.db.models.functions import GeometryDistance, Distance
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+from django.db.models import F
 
 
 
@@ -53,6 +56,10 @@ from discover.serializers import (
 
 
 
+
+
+
+
 class ProductFilter(filters.FilterSet):
 
 
@@ -62,12 +69,6 @@ class ProductFilter(filters.FilterSet):
                   'category__name': ['exact', 'in', 'startswith'],
                   'price': ['exact', 'gt', 'lt']
                  }
-
-
-
-
-
-
 
 
 
@@ -88,12 +89,91 @@ class PostFilter(filters.FilterSet):
         model = Post
         fields = {
             'product': '__all__' ,
-           
         }
 
 
 
+    
 
+
+
+class PostLocation(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    filter_class = PostFilter
+
+
+    def get_queryset(self, *args, **kwargs):
+        ref_location = Point(-32.7218138, 152.1440889, srid=4326)
+        qp_latitude = self.request.query_params.get('latitude', None)
+        latitude = float(qp_latitude)
+        qp_longitude = self.request.query_params.get('longitude', None)
+        longitude = float(qp_longitude)
+        within_distance_ref = self.request.query_params.get('with', None)
+        user_ref_location = Point(longitude, latitude, srid=4326)
+        print('this is d', within_distance_ref)
+        if  within_distance_ref is not None:
+            resdata = Post.objects.filter(location__dwithin=( user_ref_location, D(km=within_distance_ref) )).annotate(distance=GeometryDistance("location",  user_ref_location))\
+            .order_by("distance")
+            print('this is latitude and longitude1', resdata)
+        if within_distance_ref is None:
+            print('this is latitude and longitude2', D(km=1000))
+            resdata = Post.objects.filter(location__dwithin=( user_ref_location,  D(km=400))).annotate(distance=Distance("location",  user_ref_location))\
+            .order_by("distance")
+            
+            items = Post.objects.all()
+            itemsx = Post.objects.get(id=1)
+            itemsa = itemsx.location
+            for item in items.annotate(distance=Distance('location',user_ref_location)).order_by("distance"):
+                print(item.id, item.distance, item.location)
+
+        # how_far = Post.objects.order_by(GeometryDistance("location", ref_location))
+        # resdata = Post.objects.annotate(distance=GeometryDistance("location", user_ref_location)).order_by("distance")
+        # resdata = Post.objects.filter(location__dwithin=( user_ref_location, 50000)).annotate(distance=GeometryDistance("location",  user_ref_location))\
+        # .order_by("distance")
+
+        queryset = resdata
+
+        title__startswith = self.request.query_params.get('title__startswith', None)
+        title__in = self.request.query_params.get('title__in', None)
+        title__exact = self.request.query_params.get('title__exact', None)
+
+        category__startswith = self.request.query_params.get('category__startswith', None)
+        category__in = self.request.query_params.get('category__in', None)
+        category__exact = self.request.query_params.get('category__exact', None)
+
+        price__lt = self.request.query_params.get('price__lt', None)
+        price__gt = self.request.query_params.get('price__gt', None)
+        price__exact = self.request.query_params.get('price__exact', None)
+
+        if title__startswith is not None:
+            queryset = queryset.filter(product__title__startswith=title__startswith)
+        if title__in is not None:
+            queryset = queryset.filter(product__title__in=title__in)
+        if title__exact is not None:
+            queryset = queryset.filter(product__title__exact=title__exact)
+
+        if price__gt is not None:
+            queryset = queryset.filter(product__price__gt=price__gt)
+        if price__lt is not None:
+            queryset = queryset.filter(product__price__lt=price__lt)  
+        if price__exact is not None:
+            queryset = queryset.filter(product__price__exact=price__exact)  
+
+        if category__startswith is not None:
+            queryset = queryset.filter(product__category__startswith=category__startswith)
+        if category__in is not None:
+            queryset = queryset.filter(product__category__in=category__in)
+        if category__exact is not None:
+            queryset = queryset.filter(product__category__exact=category__exact)
+    
+        return queryset
+
+       
+
+
+    
 
 
 class PostSearchView(ModelViewSet):
@@ -102,44 +182,44 @@ class PostSearchView(ModelViewSet):
     queryset = Post.objects.all()
     filter_class = PostFilter
 
-    # def get_queryset(self, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs):
 
-    #     queryset = Post.objects.all()
+        queryset = Post.objects.all()
 
-    #     title__startswith = self.request.query_params.get('title__startswith', None)
-    #     title__in = self.request.query_params.get('title__in', None)
-    #     title__exact = self.request.query_params.get('title__exact', None)
+        title__startswith = self.request.query_params.get('title__startswith', None)
+        title__in = self.request.query_params.get('title__in', None)
+        title__exact = self.request.query_params.get('title__exact', None)
 
-    #     category__startswith = self.request.query_params.get('category__startswith', None)
-    #     category__in = self.request.query_params.get('category__in', None)
-    #     category__exact = self.request.query_params.get('category__exact', None)
+        category__startswith = self.request.query_params.get('category__startswith', None)
+        category__in = self.request.query_params.get('category__in', None)
+        category__exact = self.request.query_params.get('category__exact', None)
 
-    #     price__lt = self.request.query_params.get('price__lt', None)
-    #     price__gt = self.request.query_params.get('price__gt', None)
-    #     price__exact = self.request.query_params.get('price__exact', None)
+        price__lt = self.request.query_params.get('price__lt', None)
+        price__gt = self.request.query_params.get('price__gt', None)
+        price__exact = self.request.query_params.get('price__exact', None)
 
-    #     if title__startswith is not None:
-    #         queryset = queryset.filter(product__title__startswith=title__startswith)
-    #     if title__in is not None:
-    #         queryset = queryset.filter(product__title__in=title__in)
-    #     if title__exact is not None:
-    #         queryset = queryset.filter(product__title__exact=title__exact)
+        if title__startswith is not None:
+            queryset = queryset.filter(product__title__startswith=title__startswith)
+        if title__in is not None:
+            queryset = queryset.filter(product__title__in=title__in)
+        if title__exact is not None:
+            queryset = queryset.filter(product__title__exact=title__exact)
 
-    #     if price__gt is not None:
-    #         queryset = queryset.filter(product__price__gt=price__gt)
-    #     if price__lt is not None:
-    #         queryset = queryset.filter(product__price__lt=price__lt)  
-    #     if price__exact is not None:
-    #         queryset = queryset.filter(product__price__exact=price__exact)  
+        if price__gt is not None:
+            queryset = queryset.filter(product__price__gt=price__gt)
+        if price__lt is not None:
+            queryset = queryset.filter(product__price__lt=price__lt)  
+        if price__exact is not None:
+            queryset = queryset.filter(product__price__exact=price__exact)  
 
-    #     if category__startswith is not None:
-    #         queryset = queryset.filter(product__category__startswith=category__startswith)
-    #     if category__in is not None:
-    #         queryset = queryset.filter(product__category__in=category__in)
-    #     if category__exact is not None:
-    #         queryset = queryset.filter(product__category__exact=category__exact)
+        if category__startswith is not None:
+            queryset = queryset.filter(product__category__startswith=category__startswith)
+        if category__in is not None:
+            queryset = queryset.filter(product__category__in=category__in)
+        if category__exact is not None:
+            queryset = queryset.filter(product__category__exact=category__exact)
     
-    #     return queryset
+        return queryset
 
 
 

@@ -207,7 +207,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
 
     class Meta:
         model = Post
-        fields = ('url', 'id','product','owner', 'created_at', 'updated_at', 'latitude', 'longitude',)
+        fields = ('url', 'id','product','owner', 'created_at', 'updated_at', 'location',)
         # fields = '__all__'
         extra_kwargs = { 
             'owner': {'required': False}
@@ -219,8 +219,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
         try:
             
             post_obj = Post.objects.create(
-                latitude = validated_data['latitude'],
-                longitude = validated_data['longitude'],
+                location = validated_data['location'],
                 # product = validated_data['product'],
                 owner = self.context['request'].user
             )
