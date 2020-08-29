@@ -106,11 +106,14 @@ WSGI_APPLICATION = 'letsell.wsgi.application'
 
 # DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl), }
 
-GDAL_LIBRARY_PATH = r'C:\\Users\\moise\\.virtualenvs\\letsell-TbkfrpJI\\Lib\site-packages\\osgeo\\gdal301.dll'
-if os.name == 'nt':
-    VENV_BASE = os.environ['VIRTUAL_ENV']
-    os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
-    os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+# GDAL_LIBRARY_PATH = r'C:\\Users\\moise\\.virtualenvs\\letsell-TbkfrpJI\\Lib\site-packages\\osgeo\\gdal301.dll'
+# if os.name == 'nt':
+#     VENV_BASE = os.environ['VIRTUAL_ENV']
+#     os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
+#     os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+
+GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
+GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
 
 
 DATABASES = {
