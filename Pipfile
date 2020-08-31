@@ -87,7 +87,6 @@ geos = "*"
 geoip = "==1.3.2"
 pyproj = "*"
 postgis = "*"
-gdal = "*"
 numpy = "*"
 psycopg2-binary = "*"
 

@@ -123,7 +123,7 @@ GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
 
 
 DATABASE_URL = os.environ['DATABASE_URL']
-DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
