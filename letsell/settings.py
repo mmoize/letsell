@@ -124,24 +124,10 @@ GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
+
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
 
-# db_from_env = dj_database_url.config(conn_max_age=500)
-# DATABASES['default'].update(db_from_env)
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': 'postgres',
-#         'USER': 'postgres',
-#         'PASSWORD': config('DBPASSWORD'),
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
-# db_from_env = dj_database_url.config(conn_max_age=500)
-# DATABASES['default'].update(db_from_env)
 
 
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID') 
