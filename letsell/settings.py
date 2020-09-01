@@ -15,6 +15,10 @@ from decouple import config
 from dj_database_url import parse as dburl
 import dj_database_url
 import psycopg2
+import django_heroku
+
+
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -108,25 +112,48 @@ WSGI_APPLICATION = 'letsell.wsgi.application'
 
 # DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl), }
 
-# GDAL_LIBRARY_PATH = r'C:\\Users\\moise\\.virtualenvs\\letsell-TbkfrpJI\\Lib\site-packages\\osgeo\\gdal301.dll'
-# if os.name == 'nt':
-#     VENV_BASE = os.environ['VIRTUAL_ENV']
-#     os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
-#     os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+import os
 
 
 
-GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
-GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
+if os.name == 'nt':
+    GDAL_DATA =' C:\OSGeo4W64\share\gdal'
+    OSGEO4W_ROOT = 'C:\OSGeo4W64'
+    PROJ_LIB = 'C:\OSGeo4W64\share\proj'
+    GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal300.dll'
 
-
+if 'DYNO' in os.environ:
+    GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
+    GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
+    
+    
 
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
+#DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
+#DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
+#DATABASES = { 'default': dj_database_url.config() }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
+    }
+}
+
+DATABASES['default'].update(db_from_env)
+DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
 

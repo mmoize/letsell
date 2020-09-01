@@ -89,6 +89,7 @@ pyproj = "*"
 postgis = "*"
 numpy = "*"
 psycopg2-binary = "*"
+django-heroku = "*"
 
 [requires]
 python_version = "3.7"
