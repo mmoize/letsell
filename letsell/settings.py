@@ -144,11 +144,11 @@ db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': config('DB_NAME'),
+        'NAME': 'dbl0883bjcaf70',
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT')
+        'HOST': 'ec2-52-86-116-94.compute-1.amazonaws.com',
+        'PORT': '5432'
     }
 }
 
