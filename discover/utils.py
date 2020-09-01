@@ -34,3 +34,6 @@ class MultipartJsonParser(parsers.MultiPartParser):
             else:
                 data[key] = value
         return parsers.DataAndFiles(data, result.files)
+
+
+#GDAL @ file:///C:/Users/moise/Downloads/GDAL-3.1.2-cp37-cp37m-win_amd64.whl
