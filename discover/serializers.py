@@ -16,6 +16,7 @@ from taggit.models import Tag
 from taggit_serializer.serializers import (TagListSerializerField, TaggitSerializer)
 from django.forms import ImageField as DjangoImageField
 from rest_framework.exceptions import NotAcceptable  
+from django.contrib.gis.geos import Point
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
@@ -219,8 +220,14 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
         try:
             
             post_obj = Post.objects.create(
-                location = validated_data['location'],
-                # product = validated_data['product'],
+                
+                qp_latitude = self.request.query_params.get('latitude', None)
+                latitude = float(qp_latitude)
+                qp_longitude = self.request.query_params.get('longitude', None)
+                longitude = float(qp_longitude)
+                within_distance_ref = self.request.query_params.get('with', None)
+                ref_location = Point(longitude, latitude, srid=4326)
+                location=ref_location
                 owner = self.context['request'].user
             )
     
