@@ -215,7 +215,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
         }
     
    
-    def create(self, validated_data):
+    def create(self, request, validated_data):
 
         latitude = float(self.request.query_params.get('latitude', None))
 
