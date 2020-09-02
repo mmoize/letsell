@@ -92,7 +92,37 @@ class PostFilter(filters.FilterSet):
         }
 
 
+#View for displaying users posts within a specified distance.
 
+class PostViaLocationView(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    filter_class = PostFilter
+
+
+    def get_queryset(self, *args, **kwargs):
+        #begin by getting the users location and display post within 100km radio of that geo pointfield.
+
+        ref_location = Point(-32.7218138, 152.1440889, srid=4326)
+        qp_latitude = self.request.query_params.get('latitude', None)
+        latitude = float(qp_latitude)
+        qp_longitude = self.request.query_params.get('longitude', None)
+        longitude = float(qp_longitude)
+        within_distance_ref = self.request.query_params.get('with', None)
+        user_ref_location = Point(longitude, latitude, srid=4326)
+
+
+        if  within_distance_ref is not None:
+            resdata = Post.objects.filter(location__dwithin=( user_ref_location, D(km=within_distance_ref) )).annotate(distance=GeometryDistance("location",  user_ref_location))\
+            .order_by("distance")
+
+        if within_distance_ref is None:
+
+            resdata = Post.objects.filter(location__dwithin=( user_ref_location,  D(km=200))).annotate(distance=Distance("location",  user_ref_location))\
+            .order_by("distance")
+            
+        return  resdata
     
 
 
