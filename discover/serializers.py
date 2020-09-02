@@ -217,17 +217,18 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
    
     def create(self, validated_data):
 
+        latitude = float(self.request.query_params.get('latitude', None))
+
+        longitude = float(self.request.query_params.get('longitude', None))
+
+        ref_location = Point(longitude, latitude, srid=4326)
+
         try:
             
             post_obj = Post.objects.create(
                 
-                qp_latitude = self.request.query_params.get('latitude', None)
-                latitude = float(qp_latitude)
-                qp_longitude = self.request.query_params.get('longitude', None)
-                longitude = float(qp_longitude)
-                within_distance_ref = self.request.query_params.get('with', None)
-                ref_location = Point(longitude, latitude, srid=4326)
-                location=ref_location
+
+                location=ref_location,
                 owner = self.context['request'].user
             )
     
