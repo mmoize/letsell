@@ -215,11 +215,16 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
         }
     
    
-    def create(self, request, validated_data):
+    def create(self, validated_data):
 
-        latitude = float(self.request.query_params.get('latitude', None))
 
-        longitude = float(self.request.query_params.get('longitude', None))
+        data = self.context['location_info']
+        contLatitude = data['latitude']
+        contLongitude = data['longitude']
+
+        latitude = float(contLatitude)
+
+        longitude = float(contLongitude)
 
         ref_location = Point(longitude, latitude, srid=4326)
 

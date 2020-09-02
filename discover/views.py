@@ -286,6 +286,9 @@ class PostCreatView(ModelViewSet):
             context.update({
                 'included_images': self.request.data
             })
+            context.update({
+                'location_info': self.request.data
+            })
 
         return context
         
