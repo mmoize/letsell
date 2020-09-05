@@ -149,14 +149,14 @@ class PostLocation(ModelViewSet):
             print('this is latitude and longitude1', resdata)
         if within_distance_ref is None:
             print('this is latitude and longitude2', D(km=1000))
-            resdata = Post.objects.filter(location__dwithin=( user_ref_location,  D(km=400))).annotate(distance=Distance("location",  user_ref_location))\
+            resdata = Post.objects.filter(location__dwithin=( user_ref_location,  D(km=200))).annotate(distance=Distance("location",  user_ref_location))\
             .order_by("distance")
             
-            items = Post.objects.all()
-            itemsx = Post.objects.get(id=1)
-            itemsa = itemsx.location
-            for item in items.annotate(distance=Distance('location',user_ref_location)).order_by("distance"):
-                print(item.id, item.distance, item.location)
+            # items = Post.objects.all()
+            # itemsx = Post.objects.get(id=1)
+            # itemsa = itemsx.location
+            # for item in items.annotate(distance=Distance('location',user_ref_location)).order_by("distance"):
+            #     print(item.id, item.distance, item.location)
 
         # how_far = Post.objects.order_by(GeometryDistance("location", ref_location))
         # resdata = Post.objects.annotate(distance=GeometryDistance("location", user_ref_location)).order_by("distance")
@@ -185,9 +185,20 @@ class PostLocation(ModelViewSet):
             queryset = queryset.filter(product__title__exact=title__exact)
 
         if price__gt is not None:
-            queryset = queryset.filter(product__price__gt=price__gt)
+            if price__gt == 'None':
+                #no minimum price was given
+                pass
+            else:
+                queryset = queryset.filter(product__price__gt=price__gt)
+
+            
         if price__lt is not None:
-            queryset = queryset.filter(product__price__lt=price__lt)  
+            if price__lt == 'None':
+                #no maximum price was given
+                pass
+            else:
+                queryset = queryset.filter(product__price__lt=price__lt) 
+             
         if price__exact is not None:
             queryset = queryset.filter(product__price__exact=price__exact)  
 
@@ -196,7 +207,11 @@ class PostLocation(ModelViewSet):
         if category__in is not None:
             queryset = queryset.filter(product__category__in=category__in)
         if category__exact is not None:
-            queryset = queryset.filter(product__category__exact=category__exact)
+            if category__exact == 'None':
+               pass
+            else:
+                queryset = queryset.filter(product__category__exact=category__exact)
+
     
         return queryset
 
