@@ -225,7 +225,7 @@ class PostLocation(ModelViewSet):
             if taggit__startswith == 'None':
                 pass
             else:
-                queryset = queryset.filter(product__taggit=taggit__startswith)
+                queryset = queryset.filter(product__taggit__name=taggit__startswith)
 
 
         # if taggit__in is not None:
