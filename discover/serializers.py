@@ -186,7 +186,8 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
             for taggit_data in taggit_data:
                 taggit_obj, created = Tag.objects.get_or_create(name=taggit_data)
                 product_obj.taggit.add(taggit_obj)
-        
+            
+            
         if 'tags' in validated_data:
             tags_data = validated_data.pop('tags')
             for tags_data in tags_data:

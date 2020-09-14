@@ -28,6 +28,7 @@ from django.contrib.gis.db.models.functions import GeometryDistance, Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.db.models import F
+from itertools import chain
 
 
 
@@ -221,21 +222,27 @@ class PostLocation(ModelViewSet):
             else:
                 queryset = queryset.filter(product__category__exact=category__exact)
         
-        if taggit__startswith is not None:
-            if taggit__startswith == 'None':
-                pass
-            else:
-                queryset = queryset.filter(product__taggit__name=taggit__startswith)
-
-
-        # if taggit__in is not None:
-        #     if taggit__in == 'None':
+        # if taggit__startswith is not None:
+        #     if taggit__startswith == 'None':
         #         pass
         #     else:
-        #         queryset = queryset.filter(product__taggit__in=taggit__in)
+        #         queryset = queryset.filter(product__taggit__name=taggit__startswith)
+
+
+        if taggit__exact is not None:
+            if taggit__exact == 'None':
+                pass
+            else:
+                tagsQueryset = queryset.filter(product__taggit__exact=taggit__exact)
+                if not tagsQueryset.exists():
+                    pass
+                else:
+                    combined_results = list(chain(queryset, tagsQueryset))
+    
+
 
     
-        return queryset
+        return combined_results
 
        
 
