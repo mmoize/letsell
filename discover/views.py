@@ -178,7 +178,13 @@ class PostLocation(ModelViewSet):
         price__exact = self.request.query_params.get('price__exact', None)
 
         if title__startswith is not None:
-            queryset = queryset.filter(product__title__startswith=title__startswith)
+            if title__startswith == 'None':
+                #no maximum price was given
+                pass
+            else:
+                queryset = queryset.filter(product__title__startswith=title__startswith)
+
+
         if title__in is not None:
             queryset = queryset.filter(product__title__in=title__in)
         if title__exact is not None:
