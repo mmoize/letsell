@@ -175,7 +175,7 @@ class PostLocation(ModelViewSet):
         category__exact = self.request.query_params.get('category__exact', None)
 
         taggit__startswith = self.request.query_params.get('taggit__startswith', None)
-        taggit__in = self.request.query_params.get('taggit__in', None)
+        taggit__exact = self.request.query_params.get('taggit__exact', None)
 
         price__lt = self.request.query_params.get('price__lt', None)
         price__gt = self.request.query_params.get('price__gt', None)
