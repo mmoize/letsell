@@ -175,7 +175,7 @@ class PostLocation(ModelViewSet):
         category__exact = self.request.query_params.get('category__exact', None)
 
         taggit__startswith = self.request.query_params.get('taggit__startswith', None)
-        taggit__exact = self.request.query_params.get('taggit__exact', None)
+        taggit__name__exact = self.request.query_params.get('taggit__name__exact', None)
 
         price__lt = self.request.query_params.get('price__lt', None)
         price__gt = self.request.query_params.get('price__gt', None)
@@ -229,11 +229,11 @@ class PostLocation(ModelViewSet):
         #         queryset = queryset.filter(product__taggit__name=taggit__startswith)
 
         combined_results = {}
-        if taggit__exact is not None:
-            if taggit__exact == 'None':
+        if taggit__name__exact is not None:
+            if taggit__name__exact == 'None':
                 pass
             else:
-                tagsQueryset = queryset.filter(product__taggit__exact=taggit__exact)
+                tagsQueryset = queryset.filter(product__taggit__name__exact=taggit__name__exact)
                 if not tagsQueryset.exists():
                     pass
                 else:
