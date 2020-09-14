@@ -173,6 +173,9 @@ class PostLocation(ModelViewSet):
         category__in = self.request.query_params.get('category__in', None)
         category__exact = self.request.query_params.get('category__exact', None)
 
+        taggit__startswith = self.request.query_params.get('taggit__startswith', None)
+        taggit__in = self.request.query_params.get('taggit__in', None)
+
         price__lt = self.request.query_params.get('price__lt', None)
         price__gt = self.request.query_params.get('price__gt', None)
         price__exact = self.request.query_params.get('price__exact', None)
@@ -217,6 +220,19 @@ class PostLocation(ModelViewSet):
                pass
             else:
                 queryset = queryset.filter(product__category__exact=category__exact)
+        
+        if taggit__startswith is not None:
+            if taggit__startswith == 'None':
+                pass
+            else:
+                queryset = queryset.filter(product__taggit__startswith=taggit__startswith)
+
+
+        # if taggit__in is not None:
+        #     if taggit__in == 'None':
+        #         pass
+        #     else:
+        #         queryset = queryset.filter(product__taggit__in=taggit__in)
 
     
         return queryset
