@@ -233,12 +233,12 @@ class PostLocation(ModelViewSet):
             if taggit__name__startswith == 'None':
                 pass
             else:
-                tagsQueryset = queryset.filter(product__taggit__startswith=taggit__name__startswith)
+                tagsQueryset = queryset.filter(product__taggit__name__startswith=taggit__name__startswith)
                 print('This is Tags queryset', tagsQueryset)
                 if not tagsQueryset.exists():
                     pass
                 else:
-                    combined_results = list(chain(queryset, tagsQueryset))
+                    combined_results = queryset | tagsQueryset 
                     queryset = combined_results
     
 
