@@ -235,7 +235,7 @@ class PostLocation(ModelViewSet):
         #     else:
         #         queryset = queryset.filter(product__taggit__name=taggit__startswith)
 
-        combined_result = []
+        combined_result = queryset
         if taggit__name__startswith is not None:
             if taggit__name__startswith == 'None':
                 pass
@@ -253,7 +253,7 @@ class PostLocation(ModelViewSet):
 
      #you are hher combined_results referenced berfore assignment error from last niger combine the two querysey
     
-        return combined_results
+        return combined_result
 
        
 
