@@ -186,7 +186,11 @@ class PostLocation(ModelViewSet):
                 #no maximum price was given
                 pass
             else:
-                queryset = queryset.filter(product__title__startswith=title__startswith)
+                newqueryset = queryset.filter(product__title__startswith=title__startswith)
+                if not newqueryset.exists():
+                    pass
+                else:
+                    queryset = newqueryset
 
 
         if title__in is not None:
