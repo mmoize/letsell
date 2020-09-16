@@ -234,6 +234,7 @@ class PostLocation(ModelViewSet):
                 pass
             else:
                 tagsQueryset = queryset.filter(product__taggit__name__startswith=taggit__name__startswith)
+                print('This is Tags queryset', tagsQueryset)
                 if not tagsQueryset.exists():
                     pass
                 else:
