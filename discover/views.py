@@ -181,6 +181,8 @@ class PostLocation(ModelViewSet):
         price__gt = self.request.query_params.get('price__gt', None)
         price__exact = self.request.query_params.get('price__exact', None)
 
+        QueryEmpty = False
+
         if title__startswith is not None:
             if title__startswith == 'None':
                 #no maximum price was given
@@ -190,6 +192,7 @@ class PostLocation(ModelViewSet):
                 if not newqueryset.exists():
                     pass
                 else:
+                    QueryEmpty = True
                     queryset = newqueryset
 
 
@@ -232,7 +235,7 @@ class PostLocation(ModelViewSet):
         #     else:
         #         queryset = queryset.filter(product__taggit__name=taggit__startswith)
 
-        combined_results = {}
+        combined_result = []
         if taggit__name__startswith is not None:
             if taggit__name__startswith == 'None':
                 pass
@@ -242,13 +245,15 @@ class PostLocation(ModelViewSet):
                 if not tagsQueryset.exists():
                     pass
                 else:
-                    combined_results = queryset | tagsQueryset 
-                    queryset = combined_results
+                    combined_results = tagsQueryset
+                    combined_result = combined_results
+
+                    
     
 
      #you are hher combined_results referenced berfore assignment error from last niger combine the two querysey
     
-        return queryset
+        return combined_results
 
        
 
