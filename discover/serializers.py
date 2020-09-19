@@ -8,7 +8,8 @@ from discover.models import (
     PurchaseItem,
     Tags,
     Post,
-    ProductImage
+    ProductImage,
+    ViewsNumber
 )
 from authentication.models import User
 from authentication.serializers import UserSerializer
@@ -17,6 +18,10 @@ from taggit_serializer.serializers import (TagListSerializerField, TaggitSeriali
 from django.forms import ImageField as DjangoImageField
 from rest_framework.exceptions import NotAcceptable  
 from django.contrib.gis.geos import Point
+
+
+
+
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
@@ -207,9 +212,11 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
     owner = UserSerializer(read_only=True,)
     product = ProductSerializer(many=True, read_only=True)
 
+
+
     class Meta:
         model = Post
-        fields = ('url', 'id','product','owner', 'created_at', 'updated_at', 'location',)
+        fields = ('url', 'id','product','owner', 'created_at', 'updated_at', 'location', 'viewcount')
         # fields = '__all__'
         extra_kwargs = { 
             'owner': {'required': False}
@@ -229,6 +236,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
 
         ref_location = Point(longitude, latitude, srid=4326)
 
+
         try:
             
             post_obj = Post.objects.create(
@@ -243,6 +251,21 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
                 detail={
                     'message': 'The request is not acceptable.'
                 }, code=406)
+
+        viewsnumber_obj = ViewsNumber.objects.get_or_create(
+            post = post_obj
+        )
+        viewsnumber_data = viewsnumber_obj[0]
+        viewsnumber_data_user = viewsnumber_data.user
+
+        currentUser = User.objects.get(id=self.context['request'].user.id)
+
+        print('this is viewcount', viewsnumber_data_user)
+        viewsnumber_data .user.add(currentUser)
+        viewsnumber_data.save()
+
+
+
         prod = self.context['included_images']
         titles = prod['title']
         slugs = prod['slug']

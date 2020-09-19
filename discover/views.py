@@ -29,6 +29,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.db.models import F
 from itertools import chain
+from authentication.models import User
 
 
 
@@ -39,7 +40,8 @@ from discover.models import (
     PurchaseOrder,
     PurchaseItem,
     Post,
-    ProductImage
+    ProductImage,
+    ViewsNumber
 )
 from discover.serializers import (
     CategorySerializer,
@@ -410,10 +412,37 @@ class PostDetailView(ModelViewSet):
 
     def get_queryset(self):
         posts = super(PostDetailView, self).get_queryset()
-        print(self.kwargs['id'])
-        post = posts.filter(id=self.kwargs['id'])
+        post_data = posts.filter(id=self.kwargs['id'])
+        post = post_data[0]
         print('this is post',post)
-        return post
+
+        #Check whether the current user has view the post
+        Checkview_Q = ViewsNumber.objects.filter(post__id=self.kwargs['id'])
+        Checkviews = Checkview_Q[0]
+        num_results = ViewsNumber.objects.filter(post__id=self.kwargs['id']).count()
+        print('this is numre',Checkviews.user.all())
+        currentUser = User.objects.get(id=self.request.user.id)
+     
+
+        if num_results <= 0:
+            pass
+        else:
+            userCheck_data = Checkviews.user.all()
+
+            if currentUser in userCheck_data:
+                pass
+            
+            else:
+                Checkviews.numberview = Checkviews.numberview+1
+                post.viewcount = post.viewcount+1
+                post.save()
+                Checkviews.user.add(currentUser)
+                Checkviews.save()
+
+
+ 
+
+        return post_data
          
     
 

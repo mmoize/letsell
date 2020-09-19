@@ -151,6 +151,7 @@ class Post(models.Model):
     product = models.ManyToManyField(Product, verbose_name=ugettext_lazy("Product"), blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    viewcount = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = ugettext_lazy('Post')
@@ -163,6 +164,10 @@ class Post(models.Model):
 
 
 
+class ViewsNumber(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    numberview = models.IntegerField(default=0)
+    user = models.ManyToManyField(User, blank=True)
 
 
 
