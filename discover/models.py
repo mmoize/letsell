@@ -6,7 +6,7 @@ from django.db.models.signals import pre_save
 from authentication.models import User
 from django.http import HttpResponse, JsonResponse
 import os
-# from .utils import unique_slug_generator, random_string_generator
+
 
 from django_extensions.db.models import (ActivatorModel,TimeStampedModel)
                                          
@@ -47,8 +47,6 @@ class Category(models.Model):
         return ' -> '.join(full_path[::-1])
 
 
-    
-
 class Tags(models.Model):
     name = models.CharField(max_length=15, blank=True, )
 
@@ -57,6 +55,7 @@ class Tags(models.Model):
         return template.format(self)
 
 # Productbase Represents both Product and PurchaseItem, it has common fields between the two
+
 class ProductBase(TimeStampedModel):
     barcode = models.CharField(primary_key=True, max_length=20, verbose_name=ugettext_lazy('Barcode'))
     title = models.TextField(verbose_name=ugettext_lazy('Title'))
@@ -90,10 +89,7 @@ class Product(ProductBase):
     taggit = TaggableManager(blank=True)
     category = models.ManyToManyField(Category, blank=True)
     
-    # returns the entire product endpoint(product-details endpoints plus slug field)
 
-    # def get_absolute_url(self):
-    #     return reverse('discover:productview-detail', kwargs={'slug': self.slug})
     
     def __str__(self):
         return self.title
@@ -123,7 +119,7 @@ class Product(ProductBase):
         
        
 
-
+#Product image path for users items/product... not related to the post
 
 def Product_image_path(instance, filename):
     return os.path.join('ProductsImage', str(instance.product.user), filename)
@@ -143,7 +139,7 @@ class ProductImage(TimeStampedModel):
         ordering = ['-created',]
 
 
-
+#Class holding user post/listing
 
 class Post(models.Model):
     owner = models.ForeignKey(User,  on_delete=models.CASCADE, verbose_name=ugettext_lazy('Owner'))
@@ -163,7 +159,7 @@ class Post(models.Model):
         return template.format(self)
 
 
-
+#class holding the number of views per users_listing
 class ViewsNumber(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     numberview = models.IntegerField(default=0)
