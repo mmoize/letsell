@@ -386,21 +386,16 @@ class PostView(APIView):
 
 
 @csrf_exempt
-def Post_list(request):
+def ProfileUserListings(request, id):
     """
     List all code snippets, or create a new snippet.
     """
     if request.method == 'GET':
 
-        device = GCMDevice.objects.all()
-        print('this is another pus', device)
-        
-        device.send_message("This is a message")
-
-        print('this is request', request)
-        posts = Post.objects.all()
+        posts = Post.objects.filter(owner=id)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
+
 
   
   
