@@ -542,7 +542,7 @@ class UserProductView(ModelViewSet):
     parser_classes = [MultipartJsonParser, JSONParser,]
 
     def get_queryset(self, *args, **kwargs):
-        queryset = Product.objects.filter(user = self.request.user)
+        queryset = Product.objects.filter(user = self.request.user, listed=False)
 
         return queryset
 

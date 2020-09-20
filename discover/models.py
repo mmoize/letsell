@@ -88,6 +88,7 @@ class Product(ProductBase):
     tags = models.ManyToManyField(Tags, related_name='tags', blank=True)
     taggit = TaggableManager(blank=True)
     category = models.ManyToManyField(Category, blank=True)
+    listed = models.BooleanField(default=False)
     
 
     

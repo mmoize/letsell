@@ -117,7 +117,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         """ ProductSerializer's Meta class """
 
         model = Product
-        fields = ["tags","taggit","id",'url', "created", "title", 'productimage_set', "description", "price", "barcode", "slug", "category", "user"]
+        fields = ["tags","taggit","id",'url', "created", "title", 'productimage_set', "description", "price", "barcode", "listed", "slug", "category", "user"]
         extra_kwargs = {
             'product_image_set': {'view_name': 'discover:productimage-detail'},
         }
@@ -240,8 +240,6 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
         try:
             
             post_obj = Post.objects.create(
-                
-
                 location=ref_location,
                 owner = self.context['request'].user
             )
@@ -278,6 +276,8 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
                 slug = slugs,
                 user = self.context['request'].user
             )
+            product_obj.listed = True
+            product_obj.save()
             post_obj.product.add(product_obj)
 
             
