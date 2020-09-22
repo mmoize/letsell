@@ -18,6 +18,7 @@ from django.urls import path, include
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 from push_notifications.api.rest_framework import GCMDeviceAuthorizedViewSet
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('authentication.urls', namespace='authentication')),
@@ -26,4 +27,6 @@ urlpatterns = [
     path('api/', include('chat.urls', namespace='chat')),
     path('api/devices/', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
     path('api/devicex/', GCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
+    path('api/password_reset/', include('django_rest_passwordreset.urls', namespace="password_rest"))
+    
 ]

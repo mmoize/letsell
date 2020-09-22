@@ -37,6 +37,16 @@ ALLOWED_HOSTS = [
     
 ]
 
+DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
+    "CLASS": "django_rest_passwordreset.tokens.RandomStringTokenGenerator",
+    "OPTIONS": {
+        "min_length": 4,
+        "max_length": 6
+    }
+}
+
+
+
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
 
@@ -64,6 +74,7 @@ INSTALLED_APPS = [
     'push_notifications',
     'fcm_django',
     'rest_framework_filters',
+    'django_rest_passwordreset',
     
 
 
@@ -88,7 +99,7 @@ ROOT_URLCONF = 'letsell.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -278,5 +289,15 @@ DJANGORESIZED_DEFAULT_KEEP_META = True
 DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'JPEG'
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'JPEG': ".jpg"}
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
+
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mosesmvp@gmail.com'
+EMAIL_HOST_PASSWORD = '0o9i8uuh'
 
 
