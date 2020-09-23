@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Message, Room
+from .models import Member
 
 class MessageAdmin(admin.ModelAdmin):
-    model = Message
-    list_display = ('sender', 'recipient')
+    model = Member
+    list_display = ('user', 'id')
 
 
-admin.site.register(Message, MessageAdmin)
-admin.site.register(Room)
+admin.site.register(Member, MessageAdmin)
+

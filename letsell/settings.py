@@ -75,13 +75,8 @@ INSTALLED_APPS = [
     'fcm_django',
     'rest_framework_filters',
     'django_rest_passwordreset',
-    
-
-
-   
-
-
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -112,7 +107,9 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'letsell.wsgi.application'
+
 
 
 # Database
@@ -299,5 +296,9 @@ EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mosesmvp@gmail.com'
 EMAIL_HOST_PASSWORD = '0o9i8uuh'
+
+
+STREAM_API_KEY = 'uyctzvydndw6'
+STREAM_API_SECRET = '83b3uxn35w4s8cwr3e3zgucwv6jh5qzrkv4zk8t49yh4wxzvf9jzmkaqvgh646ke'
 
 

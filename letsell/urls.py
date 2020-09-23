@@ -24,9 +24,8 @@ urlpatterns = [
     path('api/', include('authentication.urls', namespace='authentication')),
     path('api/', include('accounts.urls', namespace='accounts')),
     path('api/', include('discover.urls', namespace='discover')),
-    path('api/', include('chat.urls', namespace='chat')),
+    path('api/chat/', include('chat.urls', namespace='chat')),
     path('api/devices/', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
     path('api/devicex/', GCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
-    path('api/password_reset/', include('django_rest_passwordreset.urls', namespace="password_rest"))
-    
+    path('api/password_reset/', include('django_rest_passwordreset.urls', namespace="password_rest")),
 ]
