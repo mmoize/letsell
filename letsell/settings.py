@@ -33,7 +33,9 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
     'sellet.herokuapp.com',
-    '127.0.0.1'
+    '127.0.0.1',
+    'localhost:8100',
+    'localhost'
     
 ]
 
