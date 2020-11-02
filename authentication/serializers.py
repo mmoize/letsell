@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
-from .models import User
+from .models import User, UserFollowing
 from accounts.serializers import ProfileSerializer
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -116,3 +116,11 @@ class UserSerializer(serializers.ModelSerializer):
         instance.profile.save()
 
         return instance
+
+
+class UserFollowingSerializer(serializers.HyperlinkedModelSerializer):
+    #user = UserSerializer(read_only=True)
+    #following = UserSerializer(read_only=True, many=True)
+    class Meta:
+        model = UserFollowing
+        fields = ('followers', 'following')

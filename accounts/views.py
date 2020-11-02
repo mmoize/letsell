@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.models import User
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
+from rest_framework.viewsets import ModelViewSet
+from django.views.decorators.csrf import csrf_exempt
 
 from .exceptions import ProfileDoesNotExist
 from .models import Profile
@@ -53,5 +55,8 @@ class UpdateView(UpdateAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+     
+
+
 
 
