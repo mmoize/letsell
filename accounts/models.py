@@ -11,6 +11,7 @@ def get_image_path(instance, filename):
     return os.path.join('photos', str(instance.user), filename)
 
 
+DEFAULT = 'default.jpg'
 
 
 class Profile(models.Model):
@@ -20,7 +21,7 @@ class Profile(models.Model):
     country = models.CharField(max_length=30, blank=True)
     city = models.CharField(max_length=30, blank=True)
     bio = models.TextField(max_length=255, blank=True)
-    image = models.ImageField(upload_to= get_image_path, default="default.png")
+    image = models.ImageField(upload_to= get_image_path, default=DEFAULT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

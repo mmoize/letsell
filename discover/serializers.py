@@ -109,10 +109,8 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(read_only=True)
     taggit = TagListSerializerField(allow_null=True, required=False)
     category = CategorySerializer(allow_null=True, many=True, required=False)
-    #product_image_set = serializers.HyperlinkedRelatedField(view_name="discover:productimage-detail", read_only=True)
     url = serializers.HyperlinkedRelatedField(view_name="discover:product-detail", read_only=True, lookup_field="pk")
-    #url = serializers.HyperlinkedIdentityField(view_name="discover:product-detail", read_only=True, )
-    # category = CategorySerializer()
+
     class Meta:
         """ ProductSerializer's Meta class """
 
@@ -134,24 +132,22 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         parentcategoryDB = Category.objects.get(id = category_parent)
         parentcategoryDic = parentcategoryDB
         parentcategoryInstance = parentcategoryDic
-        #print('this parent category', parentcategoryInstance)
 
-        
+
         category_obj = Category.objects.get_or_create(
             name = category_name,
             slug = category_slug,
             parent = parentcategoryInstance,
         )
-
-
-
-        
-
         category_instance = category_obj[0]
         
-        print('this is the category name0', category_instance)
+        
+        # All title are saved as lowercase
+        v_title = validated_data['title']
+        lowered_title = v_title.lower()
+
         product_obj = Product.objects.create(
-            title = validated_data['title'],
+            title = lowered_title,
             description = validated_data['description'],
             price = validated_data['price'],
             barcode = validated_data['barcode'],
@@ -162,22 +158,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         product_obj.category.add(category_instance)
         
         product_obj.category.add(parentcategoryInstance)
-        # try:
 
-
-            
-        #     # if 'included_images' in self.context:
-                
-        #     #     images_data = self.context['included_images']
-        #     #     for i in images_data.getlist('image'):
-        #     #         print("another", i)
-        #     #         ProductImage.objects.create(product=product_obj, image=i,  user=self.context['request'].user)
-
-        # except Exception:
-        #     raise NotAcceptable(
-        #         detail={
-        #             'message': 'The request is not acceptable.'
-        #         }, code=406)
 
 
 
@@ -258,7 +239,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
 
         currentUser = User.objects.get(id=self.context['request'].user.id)
 
-        print('this is viewcount', viewsnumber_data_user)
+
         viewsnumber_data .user.add(currentUser)
         viewsnumber_data.save()
 
@@ -292,9 +273,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
 
 
 
-
-
-
+# the payment integration section.. still in progress
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):

@@ -73,8 +73,6 @@ class ProductFilter(filters.FilterSet):
                   'price': ['exact', 'gt', 'lt']
                  }
 
-
-
 class PostFilter(filters.FilterSet):
     # Not overridden by `__all__`
     #price__gt = filters.NumberFilter(field_name='price', lookup_expr='gt', label='Minimum price')
@@ -95,7 +93,7 @@ class PostFilter(filters.FilterSet):
         }
 
 
-#View for displaying users posts within a specified distance.
+
 
 class PostViaLocationView(ModelViewSet):
     permission_classes = (IsAuthenticated, )
@@ -128,7 +126,7 @@ class PostViaLocationView(ModelViewSet):
         return  resdata
     
 
-
+#View for displaying users posts within a specified distance.
 
 class PostLocation(ModelViewSet):
     permission_classes = (IsAuthenticated, )
@@ -138,20 +136,37 @@ class PostLocation(ModelViewSet):
 
 
     def get_queryset(self, *args, **kwargs):
-        ref_location = Point(-32.7218138, 152.1440889, srid=4326)
+
+        ref_location = Point(-32.7218138, 152.1440889, srid=4326)   # Default ref_location point/if current user's gps is unavailable.
+
+        # Latitude and longitude coordinates from user's gps: client side.
         qp_latitude = self.request.query_params.get('latitude', None)
-        latitude = float(qp_latitude)
+        if qp_latitude is not None:
+            if qp_latitude == 'undefined':
+                latitude = float('-32.7218138')
+            else:
+                latitude = float(qp_latitude)
+        
+
         qp_longitude = self.request.query_params.get('longitude', None)
-        longitude = float(qp_longitude)
-        within_distance_ref = self.request.query_params.get('with', None)
+        if qp_longitude is not None:
+            if qp_longitude == 'undefined':
+                longitude = float('152.1440889')
+            else:
+                longitude = float(qp_longitude)
+                
+                
+
         user_ref_location = Point(longitude, latitude, srid=4326)
-        print('this is d', within_distance_ref)
+        
+        # user's specified search radius. checking if a distance radius was given
+        within_distance_ref = self.request.query_params.get('with', None)
+
         if  within_distance_ref is not None:
             resdata = Post.objects.filter(location__dwithin=( user_ref_location, D(km=within_distance_ref) )).annotate(distance=GeometryDistance("location",  user_ref_location))\
             .order_by("distance")
-            print('this is latitude and longitude1', resdata)
+        # If a search distance was  not provided, 200km radius is placed as the Default search radius.
         if within_distance_ref is None:
-            print('this is latitude and longitude2', D(km=1000))
             resdata = Post.objects.filter(location__dwithin=( user_ref_location,  D(km=200))).annotate(distance=Distance("location",  user_ref_location))\
             .order_by("distance")
             
@@ -165,6 +180,9 @@ class PostLocation(ModelViewSet):
         # resdata = Post.objects.annotate(distance=GeometryDistance("location", user_ref_location)).order_by("distance")
         # resdata = Post.objects.filter(location__dwithin=( user_ref_location, 50000)).annotate(distance=GeometryDistance("location",  user_ref_location))\
         # .order_by("distance")
+
+        # Passing down to word search. The section below checks whether request contains any of the search queries below
+        # such as title/category/tags/price
 
         queryset = resdata
 
@@ -190,7 +208,7 @@ class PostLocation(ModelViewSet):
                 #no maximum price was given
                 pass
             else:
-                newqueryset = queryset.filter(product__title__startswith=title__startswith)
+                newqueryset = queryset.filter(product__title__startswith=title__startswith.lower())
                 if not newqueryset.exists():
                     pass
                 else:
@@ -199,9 +217,9 @@ class PostLocation(ModelViewSet):
 
 
         if title__in is not None:
-            queryset = queryset.filter(product__title__in=title__in)
+            queryset = queryset.filter(product__title__in=title__in.lower())
         if title__exact is not None:
-            queryset = queryset.filter(product__title__exact=title__exact)
+            queryset = queryset.filter(product__title__exact=title__exact.lower())
 
         if price__gt is not None:
             if price__gt == 'None':
@@ -242,18 +260,13 @@ class PostLocation(ModelViewSet):
             if taggit__name__startswith == 'None':
                 pass
             else:
-                tagsQueryset = queryset.filter(product__taggit__name__startswith=taggit__name__startswith)
+                tagsQueryset = queryset.filter(product__taggit__name__startswith=taggit__name__startswith.lower())
                 print('This is Tags queryset', tagsQueryset)
                 if not tagsQueryset.exists():
                     pass
                 else:
                     combined_results = tagsQueryset
                     combined_result = combined_results
-
-                    
-    
-
-     #you are hher combined_results referenced berfore assignment error from last niger combine the two querysey
     
         return combined_result
 
@@ -323,7 +336,7 @@ class  SearchPost(generics.ListAPIView):
 
 
 class PostCreatView(ModelViewSet):
-    # Create view for Category objects
+
     
     permission_classes = (IsAuthenticated,)  
     queryset = Category.objects.all()
@@ -351,18 +364,6 @@ class PostCreatView(ModelViewSet):
         
     def create(self, request, id, *args, **kwargs):
 
-
-        # try:
-        #     PostImage_serializer = ProductImageSerializer(data=request.FILES)
-        #     PostImage_serializer.is_valid(raise_exception=True)
-        # except Exception:
-        #     raise NotAcceptable(
-
-        #         detail={
-        #             'message': 'upload a valid image. The file you uploaded was '
-        #                         'neither not an image or a corrupted image.'
-        #         }, code=406
-        #     ) 
 
         serializer = self.get_serializer(data=request.data)
         
@@ -447,7 +448,6 @@ class PostDetailView(ModelViewSet):
 class Post_DetailView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PostSerializer
-    #queryset = Post.objects.all()
 
     def get(self, pk, request, format=None):
         queryset = Post.objects.all()
@@ -503,10 +503,7 @@ class CategoryView(ModelViewSet):
 
 
 
-    # def get_queryset(self, *args, **kwargs):
-    #     col = Category.objects.all()
 
-    #     return col
 
 
 class CategoryCreateView(CreateAPIView):
@@ -565,20 +562,13 @@ def Product_listCategory(request, category):
         serializer = ProductSerializer(product, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-# def Product_list(request):
-#     """
-#     List all code snippets, or create a new snippet.
-#     """
-#     if request.method == 'GET':
-#         product = Product.objects.all()
-#         serializer = ProductSerializer(product, many=True)
-#         return JsonResponse(serializer.data, safe=False)
+
 
 
 class ProductCreateView(ModelViewSet):
     # Create view for Category objects
 
-    permission_classes = (IsAuthenticated,)  # you are here
+    permission_classes = (IsAuthenticated,)  
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     parser_classes = [MultipartJsonParser, JSONParser,]
@@ -595,7 +585,7 @@ class ProductCreateView(ModelViewSet):
                 'category_info': self.request.data
             })
 
-            # print('this is your context', self.request.data)
+
         return context
 
     def create(self, request, *args, **kwargs):
@@ -641,15 +631,7 @@ class ProductImageViewSet(ModelViewSet):
 
         return queryset
 
-# class ProductImageViewSet(ModelViewSet):
-#     permission_classes = (IsAuthenticated,)
- 
-#     serializer_class = ProductSerializer
 
-#     def get_queryset(self, *args, **kwargs):
-#         queryset = Product.objects.all()
-
-#         return queryset
 
 
 
