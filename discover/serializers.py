@@ -90,7 +90,7 @@ class ProductImageSerializer(serializers.HyperlinkedModelSerializer):
  
     
     def validate(self, attrs):
-    
+        print('hi its me', )
         default_error_messages = {
             'invalid_image':
             'Upload a valid image. The file you uploaded was either not an image'
