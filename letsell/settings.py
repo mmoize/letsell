@@ -154,9 +154,9 @@ db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'dbl0883bjcaf70',
-        'USER': 'qwtqyrfuqzljtd',
-        'PASSWORD': 'cc2979db2f9a56e099a71022c5c8dfb21b65da99283faf73cfb79824b8e638ea',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'ec2-52-86-116-94.compute-1.amazonaws.com',
         'PORT': '5432'
     }
@@ -177,6 +177,13 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Email settings for send user's Password Reset Token
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mosesmvp@gmail.com'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -293,11 +300,7 @@ DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 
 
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mosesmvp@gmail.com'
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
 
 
 
