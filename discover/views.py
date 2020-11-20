@@ -283,7 +283,7 @@ class PostLocation(ModelViewSet):
             if taggit__name__startswith == 'None':
                 pass
             else:
-                tagsQueryset = Post.filter(product__taggit__name__startswith=taggit__name__startswith.lower())
+                tagsQueryset = Post.objects.filter(product__taggit__name__startswith=taggit__name__startswith.lower())
                 print('This is Tags queryset', tagsQueryset)
                 if not tagsQueryset.exists():
                     combined_result = []
