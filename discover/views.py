@@ -165,24 +165,14 @@ class PostLocation(ModelViewSet):
         if  within_distance_ref is not None:
             resdata = Post.objects.filter(location__dwithin=( user_ref_location, D(km=within_distance_ref) )).annotate(distance=GeometryDistance("location",  user_ref_location))\
             .order_by("distance")
+
         # If a search distance was  not provided, 200km radius is placed as the Default search radius.
         if within_distance_ref is None:
             resdata = Post.objects.filter(location__dwithin=( user_ref_location,  D(km=200))).annotate(distance=Distance("location",  user_ref_location))\
             .order_by("distance")
             
-            # items = Post.objects.all()
-            # itemsx = Post.objects.get(id=1)
-            # itemsa = itemsx.location
-            # for item in items.annotate(distance=Distance('location',user_ref_location)).order_by("distance"):
-            #     print(item.id, item.distance, item.location)
 
-        # how_far = Post.objects.order_by(GeometryDistance("location", ref_location))
-        # resdata = Post.objects.annotate(distance=GeometryDistance("location", user_ref_location)).order_by("distance")
-        # resdata = Post.objects.filter(location__dwithin=( user_ref_location, 50000)).annotate(distance=GeometryDistance("location",  user_ref_location))\
-        # .order_by("distance")
 
-        # Passing down to word search. The section below checks whether request contains any of the search queries below
-        # such as title/category/tags/price
 
         queryset = resdata
 
@@ -202,14 +192,17 @@ class PostLocation(ModelViewSet):
         price__exact = self.request.query_params.get('price__exact', None)
 
         QueryEmpty = False
+        AutoSearch = True
 
         if title__startswith is not None:
+            
             if title__startswith == 'None':
                 #no maximum price was given
                 pass
             else:
                 newqueryset = queryset.filter(product__title__startswith=title__startswith.lower())
                 if not newqueryset.exists():
+                    AutoSearch = False
                     pass
                 else:
                     QueryEmpty = True
@@ -217,9 +210,31 @@ class PostLocation(ModelViewSet):
 
 
         if title__in is not None:
-            queryset = queryset.filter(product__title__in=title__in.lower())
+
+            if title__startswith == 'None':
+                #no maximum price was given
+                pass
+            else:
+                newqueryset = queryset.filter(product__title__in=title__startswith.lower())
+                if not newqueryset.exists():
+                    AutoSearch = False
+                    pass
+                else:
+                    QueryEmpty = True
+                    queryset = newqueryset
         if title__exact is not None:
-            queryset = queryset.filter(product__title__exact=title__exact.lower())
+
+            if title__startswith == 'None':
+                #no maximum price was given
+                pass
+            else:
+                newqueryset = queryset.filter(product__title__exact=title__startswith.lower())
+                if not newqueryset.exists():
+                    AutoSearch = False
+                    pass
+                else:
+                    QueryEmpty = True
+                    queryset = newqueryset
 
         if price__gt is not None:
             if price__gt == 'None':
@@ -255,6 +270,11 @@ class PostLocation(ModelViewSet):
         #     else:
         #         queryset = queryset.filter(product__taggit__name=taggit__startswith)
 
+        if AutoSearch == False:
+            EmptySet = []
+            queryset = EmptySet
+            
+
         combined_result = queryset
         if taggit__name__startswith is not None:
             if taggit__name__startswith == 'None':
@@ -267,6 +287,8 @@ class PostLocation(ModelViewSet):
                 else:
                     combined_results = tagsQueryset
                     combined_result = combined_results
+
+        
     
         return combined_result
 
