@@ -286,7 +286,7 @@ class PostLocation(ModelViewSet):
                 tagsQueryset = Post.objects.filter(product__taggit__name__startswith=taggit__name__startswith.lower())
                 print('This is Tags queryset', tagsQueryset)
                 if not tagsQueryset.exists():
-                    combined_result = []
+                    combined_result = None
                     pass
                 else:
                     combined_results = tagsQueryset
