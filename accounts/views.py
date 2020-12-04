@@ -8,11 +8,12 @@ from authentication.models import User
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from .exceptions import ProfileDoesNotExist
 from .models import Profile
 from .renderers import ProfileJSONRenderer
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, ProfileDetailSerializer
 
 
 class ProfileRetrieveAPIView(RetrieveAPIView):
@@ -55,8 +56,39 @@ class UpdateView(UpdateAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-     
 
 
 
+
+
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def profile_detail_api_view(request, username, *args, **kwargs):
+    # get the profile for the passed username
+    qs = Profile.objects.filter(user__username=username)
+    if not qs.exists():
+        return Response({"detail": "User not found"}, status=404)
+    profile_obj = qs.first()
+    data = request.data or {}
+    if request.method == "POST":
+        me = request.user
+        action = data.get("action")
+        if profile_obj.user != me:
+            if action == "follow":
+                profile_obj.followers.add(me)
+            elif action == "unfollow":
+                profile_obj.followers.remove(me)
+            else:
+                pass
+    
+    # if request:
+    #     user = request.user
+    #     is_following = FollowerRelationship.objects.filter()
+    #     print('this is_following', is_following)
+
+    serializer =  ProfileSerializer(instance=profile_obj, context={"request": request})
+    return Response(serializer.data, status=200)
+    
 

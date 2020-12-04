@@ -7,8 +7,8 @@ from rest_framework.viewsets import ModelViewSet
 from .renderers import UserJSONRenderer
 from rest_framework.generics import RetrieveUpdateAPIView
 
-from .serializers import RegistrationSerializer, LoginSerializer, UserFollowingSerializer, UserSerializer
-from .models import UserFollowing, User
+from .serializers import RegistrationSerializer, LoginSerializer, UserSerializer
+from .models import  User
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
@@ -75,41 +75,41 @@ class LoginApIView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class UserFollowingViewSet(ModelViewSet):
+# class UserFollowingViewSet(ModelViewSet):
     
-    permission_classes = (IsAuthenticated,)
-    serializer_class = UserFollowingSerializer
-    queryset = UserFollowing.objects.all()
+#     permission_classes = (IsAuthenticated,)
+#     serializer_class = UserFollowingSerializer
+#     queryset = UserFollowing.objects.all()
 
 
-    def get_queryset(self): 
-        user = User.objects.get(id=self.request.user.id) # it is just example with id 1   
-        user.following.all()
-        user.followers.all()
+#     def get_queryset(self): 
+#         user = User.objects.get(id=self.request.user.id) # it is just example with id 1   
+#         user.following.all()
+#         user.followers.all()
 
-        userfollowing = {}
-        userfollowing['following'] = user.following.all()
-        userfollowing['follower'] = user.followers.all()
+#         userfollowing = {}
+#         userfollowing['following'] = user.following.all()
+#         userfollowing['follower'] = user.followers.all()
 
-        return userfollowing
+#         return userfollowing
 
 
 
-    def create(self, request, id, *args, **kwargs):
-        followingUser_obj = User.objects.get(id=id)
-        userFollowing_obj = UserFollowing.objects.create(user=self.request.user, following=followingUser_obj)
-        print('this is the userfollowing_ob', userFollowing_obj)
+#     def create(self, request, id, *args, **kwargs):
+#         followingUser_obj = User.objects.get(id=id)
+#         userFollowing_obj = UserFollowing.objects.create(user=self.request.user, following=followingUser_obj)
+#         print('this is the userfollowing_ob', userFollowing_obj)
 
-        user = User.objects.get(id=self.request.user.id) # it is just example with id 1
-        user.following.all()
-        user.followers.all()
-        print('this is anotherone', user.followers.all())
-        # user.following.all()
-        # user.followers.all()
+#         user = User.objects.get(id=self.request.user.id) # it is just example with id 1
+#         user.following.all()
+#         user.followers.all()
+#         print('this is anotherone', user.followers.all())
+#         # user.following.all()
+#         # user.followers.all()
 
-        # print('this is anotherone', user.following.all())
+#         # print('this is anotherone', user.following.all())
 
-        # following_data = UserFollowingSerializer(userFollowing_obj.following.all(), many=True)
-        # followers_data = UserFollowingSerializer(userFollowing_obj.followers.all(), many=True)
-        return JsonResponse({'status':status.HTTP_200_OK, 'data':{'user':user.following.all(), 'following':user.following.all(), 'followers':followers_data.data}, "message":"success"})
+#         # following_data = UserFollowingSerializer(userFollowing_obj.following.all(), many=True)
+#         # followers_data = UserFollowingSerializer(userFollowing_obj.followers.all(), many=True)
+#         return JsonResponse({'status':status.HTTP_200_OK, 'data':{'user':user.following.all(), 'following':user.following.all(), 'followers':followers_data.data}, "message":"success"})
 

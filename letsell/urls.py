@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('authentication.urls', namespace='authentication')),
     path('api/', include('accounts.urls', namespace='accounts')),
+    path('api/core/', include('core.urls', namespace='core')),
     path('api/', include('discover.urls', namespace='discover')),
     path('api/chat/', include('chat.urls', namespace='chat')),
     path('api/devices/', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),

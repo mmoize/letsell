@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
-from .models import User, UserFollowing
+from .models import User
 from accounts.serializers import ProfileSerializer
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -85,6 +85,7 @@ class UserSerializer(serializers.ModelSerializer):
     bio = serializers.CharField(source='profile.bio', read_only=True)
     image = serializers.ImageField(source='profile.image', read_only=True)
 
+  
     class Meta:
         model = User
         
@@ -118,9 +119,3 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserFollowingSerializer(serializers.HyperlinkedModelSerializer):
-    #user = UserSerializer(read_only=True)
-    #following = UserSerializer(read_only=True, many=True)
-    class Meta:
-        model = UserFollowing
-        fields = ('followers', 'following')

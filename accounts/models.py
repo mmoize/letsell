@@ -22,8 +22,19 @@ class Profile(models.Model):
     city = models.CharField(max_length=30, blank=True)
     bio = models.TextField(max_length=255, blank=True)
     image = models.ImageField(upload_to= get_image_path, default=DEFAULT)
+    followers = models.ManyToManyField(User, related_name='following', blank=True)
+    following = models.ManyToManyField(User, related_name='followers', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+
+
+
+    def __str__(self):
+        template = '{0.user} '
+        return template.format(self)
+
+
+                                           
 
 
 
@@ -40,3 +51,8 @@ post_save.connect(create_user_profile, sender=User, dispatch_uid="users-profilec
 
 
 
+
+class FollowerRelationship(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)

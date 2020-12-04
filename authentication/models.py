@@ -45,6 +45,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
+
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -73,14 +75,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token.decode('utf-8') 
+
+
+
    
 
-class UserFollowing(models.Model):
-    user = models.ForeignKey(User, related_name="following", on_delete=models.CASCADE)
-    following = models.ForeignKey(User, related_name="followers", on_delete=models.CASCADE)
-    # info about when user started following
-    created = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ("user", "following")
-        ordering = ["-created"]

@@ -17,3 +17,7 @@ class CoreJSONRenderer(JSONRenderer):
         return json.dumps({
             self.object_label: data
         })
+
+
+class ProfileJSONRenderer(CoreJSONRenderer):
+    object_label = 'profile'
