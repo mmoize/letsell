@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from .exceptions import ProfileDoesNotExist
 from .models import Profile
 from .renderers import ProfileJSONRenderer
-from .serializers import ProfileSerializer, ProfileDetailSerializer
+from .serializers import ProfileSerializer
 
 
 class ProfileRetrieveAPIView(RetrieveAPIView):
@@ -63,32 +63,32 @@ class UpdateView(UpdateAPIView):
 
 
 
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
-def profile_detail_api_view(request, username, *args, **kwargs):
-    # get the profile for the passed username
-    qs = Profile.objects.filter(user__username=username)
-    if not qs.exists():
-        return Response({"detail": "User not found"}, status=404)
-    profile_obj = qs.first()
-    data = request.data or {}
-    if request.method == "POST":
-        me = request.user
-        action = data.get("action")
-        if profile_obj.user != me:
-            if action == "follow":
-                profile_obj.followers.add(me)
-            elif action == "unfollow":
-                profile_obj.followers.remove(me)
-            else:
-                pass
+# @api_view(['GET', 'POST'])
+# @permission_classes([IsAuthenticated])
+# def profile_detail_api_view(request, username, *args, **kwargs):
+#     # get the profile for the passed username
+#     qs = Profile.objects.filter(user__username=username)
+#     if not qs.exists():
+#         return Response({"detail": "User not found"}, status=404)
+#     profile_obj = qs.first()
+#     data = request.data or {}
+#     if request.method == "POST":
+#         me = request.user
+#         action = data.get("action")
+#         if profile_obj.user != me:
+#             if action == "follow":
+#                 profile_obj.followers.add(me)
+#             elif action == "unfollow":
+#                 profile_obj.followers.remove(me)
+#             else:
+#                 pass
     
-    # if request:
-    #     user = request.user
-    #     is_following = FollowerRelationship.objects.filter()
-    #     print('this is_following', is_following)
+#     # if request:
+#     #     user = request.user
+#     #     is_following = FollowerRelationship.objects.filter()
+#     #     print('this is_following', is_following)
 
-    serializer =  ProfileSerializer(instance=profile_obj, context={"request": request})
-    return Response(serializer.data, status=200)
+#     serializer =  ProfileSerializer(instance=profile_obj, context={"request": request})
+#     return Response(serializer.data, status=200)
     
 
