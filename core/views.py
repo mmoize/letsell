@@ -22,7 +22,7 @@ from authentication.serializers import UserSerializer
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated,])
 @renderer_classes([JSONRenderer,])
-@parser_classes([JSONParser,])
+@parser_classes([FormParser, MultiPartParser])
 def detail_api_view(request, username, *args, **kwargs):
     # get the profile for the passed username
     qs = Profile.objects.filter(user__username=username)
