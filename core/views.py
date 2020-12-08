@@ -8,7 +8,7 @@ from authentication.models import User
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, parser_classes, permission_classes, renderer_classes
 from django.http import HttpResponse, JsonResponse
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
