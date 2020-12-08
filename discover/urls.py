@@ -84,7 +84,7 @@ urlpatterns = [
     path('postviewer/', PostView),
     path('userpostview/', UserPostView.as_view({'get': 'list'}), name='userpostview-detail'),
     
-    path('getprofilepostlisting/<int:id>', ProfileUserListings, name='products'),
+    path('getprofilepostlisting/<int:id>' , ProfileUserListings, name='products'),
     
     path('postdetail/<int:id>', postdetailview , name='postdetail'),
      path('postsearchview/', postSearchview , name='postsearch'),

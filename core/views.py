@@ -10,6 +10,8 @@ from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from django.http import HttpResponse, JsonResponse
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 
 
 from accounts.models import Profile
@@ -19,6 +21,8 @@ from authentication.serializers import UserSerializer
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+@parser_classes([JSONParser, FormParser, MultiPartParser])
 def detail_api_view(request, username, *args, **kwargs):
     # get the profile for the passed username
     qs = Profile.objects.filter(user__username=username)
