@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/', include('accounts.urls', namespace='accounts')),
     path('api/core/', include('core.urls', namespace='core')),
     path('api/', include('discover.urls', namespace='discover')),
+    path('api/fleeks/', include('fleeks.urls', namespace='fleeks')),
     path('api/chat/', include('chat.urls', namespace='chat')),
     path('api/devices/', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
     path('api/devicex/', GCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),

@@ -39,6 +39,11 @@ ALLOWED_HOSTS = [
     
 ]
 
+
+MAX_FLEEK_LENGTH = 240
+FLEEK_ACTION_OPTIONS = ["like", "unlike", "refleek"]
+
+
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
     "CLASS": "django_rest_passwordreset.tokens.RandomStringTokenGenerator",
     "OPTIONS": {
@@ -77,6 +82,7 @@ INSTALLED_APPS = [
     'fcm_django',
     'rest_framework_filters',
     'django_rest_passwordreset',
+    'fleeks.apps.FleeksConfig',
 ]
 
 
