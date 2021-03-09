@@ -48,6 +48,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     followers = UserSerializer(read_only=True, many=True)
     user = UserSerializer(read_only=True)
     following = UserSerializer(read_only=True, many=True)
+    lastRefresh = UserSerializer(read_only=True, many=True)
 
 
     class Meta:
@@ -58,7 +59,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
                   'bio', 'image',
                   'user', 'follower_count', 
                   'following_count', 'is_following',
-                  'followers', 'following'
+                  'followers', 'following', 'lastRefresh'
                  )
 
     def get_is_following(self, obj):
