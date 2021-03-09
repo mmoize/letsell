@@ -20,6 +20,7 @@ class ProfileDetailSerializer(serializers.HyperlinkedModelSerializer):
     follower_count = serializers.SerializerMethodField(read_only=True)
     following_count = serializers.SerializerMethodField(read_only=True)
     is_following = serializers.SerializerMethodField(read_only=True)
+    lastRefresh = UserSerializer(read_only=True, many=True)
 
 
     class Meta:
@@ -29,7 +30,7 @@ class ProfileDetailSerializer(serializers.HyperlinkedModelSerializer):
                   'country', 'city',
                   'bio', 'image',
                   'user', 'follower_count', 
-                  'following_count', 'is_following',
+                  'following_count', 'is_following','lastRefresh'
                    )
 
 
