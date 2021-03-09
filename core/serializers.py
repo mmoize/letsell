@@ -20,7 +20,7 @@ class ProfileDetailSerializer(serializers.HyperlinkedModelSerializer):
     follower_count = serializers.SerializerMethodField(read_only=True)
     following_count = serializers.SerializerMethodField(read_only=True)
     is_following = serializers.SerializerMethodField(read_only=True)
-    lastRefresh = UserSerializer(read_only=True, many=True)
+    lastRefresh = UserSerializer(read_only=True)
 
 
     class Meta:
@@ -49,7 +49,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     followers = UserSerializer(read_only=True, many=True)
     user = UserSerializer(read_only=True)
     following = UserSerializer(read_only=True, many=True)
-    lastRefresh = UserSerializer(read_only=True, many=True)
+    lastRefresh = UserSerializer(read_only=True)
 
 
     class Meta:
