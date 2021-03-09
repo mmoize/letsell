@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import os
-from datetime import datetime
+
 
 from django.db import models
 from core.models import TimestampedModel
@@ -13,7 +13,7 @@ def get_image_path(instance, filename):
 
 
 DEFAULT = 'default.jpg'
-defaultDate = datetime(2021, 3, 9)
+
 
 
 class Profile(models.Model):
@@ -26,7 +26,7 @@ class Profile(models.Model):
     image = models.ImageField(upload_to= get_image_path, default=DEFAULT)
     followers = models.ManyToManyField(User, related_name='following', blank=True)
     following = models.ManyToManyField(User, related_name='followers', blank=True)
-    lastRefresh = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, default=defaultDate)
+    lastRefresh = models.DateTimeField(auto_now=False, auto_now_add=True, blank=True )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
