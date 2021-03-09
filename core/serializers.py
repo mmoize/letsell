@@ -3,7 +3,7 @@ from authentication.models import User
 from authentication.serializers import UserSerializer
 
 from accounts.models import Profile, FollowerRelationship
-
+import datetime
 # class FollowerRelationship(serializers.HyperlinkedModelSerializer):
 class FollowerRelationshipSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -20,7 +20,8 @@ class ProfileDetailSerializer(serializers.HyperlinkedModelSerializer):
     follower_count = serializers.SerializerMethodField(read_only=True)
     following_count = serializers.SerializerMethodField(read_only=True)
     is_following = serializers.SerializerMethodField(read_only=True)
-    lastRefresh = UserSerializer(read_only=True)
+    lastRefresh = serializers.SerializerMethodField(read_only=True)
+
 
 
     class Meta:
@@ -49,7 +50,8 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     followers = UserSerializer(read_only=True, many=True)
     user = UserSerializer(read_only=True)
     following = UserSerializer(read_only=True, many=True)
-    lastRefresh = UserSerializer(read_only=True)
+    lastRefresh = serializers.SerializerMethodField(read_only=True)
+
 
 
     class Meta:
@@ -60,7 +62,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
                   'bio', 'image',
                   'user', 'follower_count', 
                   'following_count', 'is_following',
-                  'followers', 'following', 'lastRefresh'
+                  'followers', 'following','lastRefresh'
                  )
 
     def get_is_following(self, obj):
@@ -107,6 +109,12 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         print('this is followers 2', following)
 
         return obj.followers.count()
+
+    def get_lastRefresh (self, obj):
+
+        time = datetime.datetime.now()
+
+        return time
 
 
 
