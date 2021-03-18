@@ -30,6 +30,8 @@ from django.contrib.gis.measure import D
 from django.db.models import F
 from itertools import chain
 from authentication.models import User
+import random
+import datetime
 
 
 
@@ -292,14 +294,193 @@ class PostLocation(ModelViewSet):
                     combined_results = tagsQueryset
                     combined_result = combined_results
 
+        print("IIIIITS", combined_result)
+
         
     
         return combined_result
 
-       
 
 
-    
+class  PostsAndroidAPI(APIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    filter_class = PostFilter
+
+    def get(self, request):
+
+        ref_location = Point(-32.7218138, 152.1440889, srid=4326)   # Default ref_location point/if current user's gps is unavailable.
+
+        # Latitude and longitude coordinates from user's gps: client side.
+        qp_latitude = self.request.query_params.get('latitude', None)
+        if qp_latitude is not None:
+            if qp_latitude == 'undefined':
+                latitude = float('-32.7218138')
+            else:
+                latitude = float(qp_latitude)
+        
+
+        qp_longitude = self.request.query_params.get('longitude', None)
+        if qp_longitude is not None:
+            if qp_longitude == 'undefined':
+                longitude = float('152.1440889')
+            else:
+                longitude = float(qp_longitude)
+                
+                
+
+        user_ref_location = Point(longitude, latitude, srid=4326)
+        
+        # user's specified search radius. checking if a distance radius was given
+        within_distance_ref = self.request.query_params.get('with', None)
+
+        if  within_distance_ref is not None:
+            resdata = Post.objects.filter(location__dwithin=( user_ref_location, D(km=within_distance_ref) )).annotate(distance=GeometryDistance("location",  user_ref_location))\
+            .order_by("distance")
+
+        # If a search distance was  not provided, 200km radius is placed as the Default search radius.
+        if within_distance_ref is None:
+            resdata = Post.objects.filter(location__dwithin=( user_ref_location,  D(km=200))).annotate(distance=Distance("location",  user_ref_location))\
+            .order_by("distance")
+            
+
+
+
+        queryset = resdata
+
+        title__startswith = self.request.query_params.get('title__startswith', None)
+        title__in = self.request.query_params.get('title__in', None)
+        title__exact = self.request.query_params.get('title__exact', None)
+
+        category__startswith = self.request.query_params.get('category__startswith', None)
+        category__in = self.request.query_params.get('category__in', None)
+        category__exact = self.request.query_params.get('category__exact', None)
+
+        taggit__startswith = self.request.query_params.get('taggit__startswith', None)
+        taggit__name__startswith = self.request.query_params.get('taggit__name__startswith', None)
+
+        price__lt = self.request.query_params.get('price__lt', None)
+        price__gt = self.request.query_params.get('price__gt', None)
+        price__exact = self.request.query_params.get('price__exact', None)
+
+        QueryEmpty = False
+        AutoSearch = True
+
+        if title__startswith is not None:
+            
+            if title__startswith == 'None':
+                #no maximum price was given
+                pass
+            else:
+                newqueryset = queryset.filter(product__title__startswith=title__startswith.lower())
+                if not newqueryset.exists():
+                    AutoSearch = False
+                    pass
+                else:
+                    QueryEmpty = True
+                    queryset = newqueryset
+
+
+        if title__in is not None:
+
+            if title__startswith == 'None':
+                #no maximum price was given
+                pass
+            else:
+                newqueryset = queryset.filter(product__title__in=title__startswith.lower())
+                if not newqueryset.exists():
+                    AutoSearch = False
+                    pass
+                else:
+                    QueryEmpty = True
+                    queryset = newqueryset
+        if title__exact is not None:
+
+            if title__startswith == 'None':
+                #no maximum price was given
+                pass
+            else:
+                newqueryset = queryset.filter(product__title__exact=title__startswith.lower())
+                if not newqueryset.exists():
+                    AutoSearch = False
+                    pass
+                else:
+                    QueryEmpty = True
+                    queryset = newqueryset
+
+        if price__gt is not None:
+            if price__gt == 'None':
+                #no minimum price was given
+                pass
+            else:
+                queryset = queryset.filter(product__price__gt=price__gt)
+
+            
+        if price__lt is not None:
+            if price__lt == 'None':
+                #no maximum price was given
+                pass
+            else:
+                queryset = queryset.filter(product__price__lt=price__lt) 
+             
+        if price__exact is not None:
+            queryset = queryset.filter(product__price__exact=price__exact)  
+
+        if category__startswith is not None:
+            queryset = queryset.filter(product__category__startswith=category__startswith)
+        if category__in is not None:
+            queryset = queryset.filter(product__category__in=category__in)
+        if category__exact is not None:
+            if category__exact == 'None':
+               pass
+            else:
+                queryset = queryset.filter(product__category__exact=category__exact)
+        
+        # if taggit__startswith is not None:
+        #     if taggit__startswith == 'None':
+        #         pass
+        #     else:
+        #         queryset = queryset.filter(product__taggit__name=taggit__startswith)
+
+        if AutoSearch == False:
+
+            EmptySet = Post.objects.none()
+            queryset = EmptySet
+            combined_result = None
+        if AutoSearch == True:
+            combined_result = queryset
+
+        
+        if taggit__name__startswith is not None:
+            if taggit__name__startswith == 'None':
+                pass
+            else:
+                tagsQueryset = Post.objects.filter(product__taggit__name__startswith=taggit__name__startswith.lower())
+                print('This is Tags queryset', tagsQueryset)
+                if not tagsQueryset.exists():
+                    combined_result = None
+                    pass
+                else:
+                    combined_results = tagsQueryset
+                    combined_result = combined_results
+
+
+        postSerializedData = PostSerializer(data=combined_result, many=True)
+        postSerializedData.is_valid()
+        
+        randomID = random.randint(0,100000)
+        date = datetime.datetime.now()
+        resultsData = {}
+        resultsData["id"] = randomID
+        resultsData["lastRefresh"] = date
+        resultsData["results"] = postSerializedData.data
+
+        return Response(resultsData)
+
+
+
+
 
 
 class PostSearchView(ModelViewSet):
@@ -418,10 +599,13 @@ def ProfileUserListings(request, id):
     List all code snippets, or create a new snippet.
     """
     if request.method == 'GET':
-
+        
         posts = Post.objects.filter(owner=id)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+
 
 
   

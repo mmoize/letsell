@@ -16,6 +16,7 @@ from discover.views import (
     Post_DetailView,
     ProductImageViewSet,
     ProductImageset,
+    PostsAndroidAPI,
     UserProductView,
     UserDeleteProductView,
     UserPostView,
@@ -24,7 +25,7 @@ from discover.views import (
     SearchPost,
     PostSearchView,
     PostLocation,
-    PostViaLocationView
+    PostViaLocationView,
 )
   
 
@@ -51,7 +52,7 @@ urlpatterns = [
         view_categories,
         name='view_categories'
     ),
-    #------------------------end-categories      \
+    #------------------------end-categories      
 
     
     path(
@@ -66,6 +67,7 @@ urlpatterns = [
     path('viewproduct/', Product_list, name='products-detail'),
     path('viewproductimage/', ProductImageViewSet.as_view({'get': 'list'}), name='productimage-detail'),
     path('imageset/<int:id>/', ProductImageset.as_view(), name='imageset-detail'),
+    path('postsandroidapi/', PostsAndroidAPI.as_view(), name='posts_android_api'),
     #------------------------end-products
     path('viewpostfilter/<int:category>', Postfilterview.as_view(), name='post_category_filter-detail'),
     path('viewpostsearch/', SearchPost.as_view(), name='post_category_filter-detail'),
@@ -87,9 +89,9 @@ urlpatterns = [
     path('getprofilepostlisting/<int:id>' , ProfileUserListings, name='products'),
     
     path('postdetail/<int:id>', postdetailview , name='postdetail'),
-     path('postsearchview/', postSearchview , name='postsearch'),
+    path('postsearchview/', postSearchview , name='postsearch'),
     path('postlocationview/', postlocation , name='postlocation'),
-     
+
     path(
         'postdetails/',
         Post_DetailView.as_view(),
