@@ -593,6 +593,32 @@ class PostView(APIView):
         return JsonResponse(serializer.data)
 
 
+
+
+class  ProfileUserPostsAndroidAPI(APIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+    def get(self, request):
+
+        posts = Post.objects.filter(owner=request.user.id)
+        print("this is posts", posts)
+        serializer = PostSerializer(posts, many=True)
+       
+        #random Id 
+        randomID = random.randint(0,100000)
+        #DateTime upon requests
+        date = datetime.datetime.now()
+        #Dictionary Results Data
+        resultsData = {}
+        resultsData["id"] = randomID
+        resultsData["lastRefresh"] = date
+        resultsData["results"] = serializer.data
+
+        return Response(resultsData)
+
+
 @csrf_exempt
 def ProfileUserListings(request, id):
     """
@@ -603,8 +629,6 @@ def ProfileUserListings(request, id):
         posts = Post.objects.filter(owner=id)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
-
-
 
 
 
