@@ -5,7 +5,7 @@ from django.forms import ImageField as DjangoImageField
 
 from core.serializers import ProfileSerializer
 from authentication.serializers import UserSerializer
-from .models import Fleek, FleeksImage
+from .models import Fleeka, FleeksImage
 from authentication.models import User
 
 MAX_FLEEK_LENGTH = settings.MAX_FLEEK_LENGTH 
@@ -65,7 +65,7 @@ class FleekSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         """ fleekSerializer's Meta class """
-        model = Fleek
+        model = Fleeka
         fields = ["id",'url', "created", 'anonymity', 'public',  'fleeksimage_set', "content", "user"]
         extra_kwargs = {
             'fleek_image_set': {'view_name': 'fleeks:fleekimage-detail'},
@@ -112,11 +112,11 @@ class FleekActionSerializer(serializers.Serializer):
 
 class FleekCreateSerializer(serializers.ModelSerializer):
     user = ProfileSerializer(read_only=True) 
-    likes = serializers.SerializerMethodField(read_only=True)
+
     
     class Meta:
-        model = Fleek
-        fields = ['user', 'id', 'content', 'likes', 'created', 'parent', 'is_refleek']
+        model = Fleeka
+        fields = ['user', 'id', 'content','created', 'parent', 'is_refleek']
     
     def get_likes(self, obj):
         return obj.likes.count()

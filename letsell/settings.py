@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+FLEEK_ACTION_OPTIONS = ["like", "unlike"]
 
 ALLOWED_HOSTS = [
     'sellet.herokuapp.com',
@@ -83,6 +84,7 @@ INSTALLED_APPS = [
     'rest_framework_filters',
     'django_rest_passwordreset',
     'fleeks.apps.FleeksConfig',
+    'fleeksvideo.apps.FleeksvideoConfig'
 ]
 
 

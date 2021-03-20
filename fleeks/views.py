@@ -16,7 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Fleek, FleeksImage
+from .models import Fleeka, FleeksImage
 from accounts.models import Profile
 from .serializers import (
     FleekSerializer, 
@@ -32,7 +32,7 @@ ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 class FleekCreateView(viewsets.ModelViewSet):
     # Create view for Category objects
     permission_classes = (IsAuthenticated,)  
-    queryset = Fleek.objects.all()
+    queryset = Fleeka.objects.all()
     serializer_class = FleekSerializer
     parser_classes = [MultipartJsonParser, JSONParser,]
 
@@ -102,7 +102,7 @@ def GetFleekDetail(request, id):
 
     if request.method == 'GET':
 
-        fleek = Fleek.objects.filter(id=id)
+        fleek = Fleeka.objects.filter(id=id)
         serializer = FleekSerializer(fleek, many=True)
         return JsonResponse(serializer.data, safe=False)
         
@@ -110,7 +110,7 @@ def GetFleekDetail(request, id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def fleek_detail_view(request, fleek_id, *args, **kwargs):
-    qs = Fleek.objects.filter(id=fleek_id)
+    qs = Fleeka.objects.filter(id=fleek_id)
     if not qs.exists():
         return Response({}, status=404)
     obj = qs.first()
@@ -120,7 +120,7 @@ def fleek_detail_view(request, fleek_id, *args, **kwargs):
 @api_view(['DELETE', 'POST'])
 @permission_classes([IsAuthenticated])
 def fleek_delete_view(request, fleek_id, *args, **kwargs):
-    qs = Fleek.objects.filter(id=fleek_id)
+    qs = Fleeka.objects.filter(id=fleek_id)
     if not qs.exists():
         return Response({}, status=404)
     qs = qs.filter(user=request.user)
@@ -143,7 +143,7 @@ def fleek_action_view(request, *args, **kwargs):
         fleek_id = data.get("id")
         action = data.get("action")
         content = data.get("content")
-        qs = Fleek.objects.filter(id=fleek_id)
+        qs = Fleeka.objects.filter(id=fleek_id)
         if not qs.exists():
             return Response({}, status=404)
         obj = qs.first()
@@ -159,7 +159,7 @@ def fleek_action_view(request, *args, **kwargs):
             return Response(serializer.data, status=200)
         elif action == "retweet":
             user_profile = Profile.objects.get(user=request.user)
-            new_fleek = Fleek.objects.create(
+            new_fleek = Fleeka.objects.create(
                     user=user_profile, 
                     parent=obj,
                     content=content,
@@ -187,7 +187,7 @@ def fleeks_feed_view(request, *args, **kwargs):
     for fleeker in request.user.profile.following.all():
         userids.append(fleeker.id)
     
-    fleeks = Fleek.objects.filter(user__id__in=userids)
+    fleeks = Fleeka.objects.filter(user__id__in=userids)
 
     # for oink in oinks:
     #     likes = oink.likes.filter(created_by_id=request.user.id)
@@ -213,7 +213,7 @@ def fleeks_feed_view(request, *args, **kwargs):
 
 @api_view(['GET'])
 def fleeks_list_view(request, *args, **kwargs):
-    qs = Fleek.objects.all()
+    qs = Fleeka.objects.all()
     username = request.GET.get('username')
     if username != None:
         qs = qs.by_username(username)

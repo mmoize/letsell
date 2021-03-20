@@ -13,10 +13,6 @@ from django.contrib.gis.db.models import PointField
 
 
 
-class FleeksLike(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    fleek = models.ForeignKey("Fleek", on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)  
 
 
 
@@ -52,10 +48,9 @@ class FleekManager(models.Manager):
     def feed(self, user):
         return self.get_queryset().feed(user)
 
-class Fleek(TimeStampedModel):
+class Fleeka(TimeStampedModel):
     parent = models.ForeignKey("self", null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fleeks") # many users can many tweets
-    likes = models.ManyToManyField(User, related_name='fleek_user', blank=True, through=FleeksLike)
     content = models.TextField(blank=True, null=True)
     location = PointField(null=True, geography=True, blank=True, srid=4326, verbose_name='Location')
     anonymity = models.BooleanField(default=False)
@@ -79,7 +74,7 @@ def Fleeks_image_path(instance, filename):
     return os.path.join('FleeksImage', str(instance.user.username), filename)
 
 class FleeksImage(TimeStampedModel):
-    fleek = models.ForeignKey(Fleek, on_delete=models.CASCADE)
+    fleeka = models.ForeignKey(Fleeka, on_delete=models.CASCADE)
     image = ResizedImageField(size=[500, 400], upload_to= Fleeks_image_path)
     user = models.ForeignKey(User, default="1", on_delete=models.CASCADE)
 
