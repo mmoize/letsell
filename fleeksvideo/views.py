@@ -30,7 +30,7 @@ from rest_framework.permissions import (
 
     )
 
-from .models import Fleek, Comment
+from .models import Fleek, Comment, FleekLike
 
 from .pagination import FleekLimitOffsetPagination, FleekPageNumberPagination
 #from .permissions import IsOwnerOrReadOnly
@@ -222,3 +222,21 @@ def fleek_action_view(request, *args, **kwargs):
         #     serializer = FleekSerializer(new_fleek)
         #     return Response(serializer.data, status=201)
     return Response({}, status=200)
+
+
+
+
+# class  IsFleekVideoLiked(APIView):
+#     permission_classes = (IsAuthenticated, )
+#     serializer_class = PostSerializer
+
+
+#     def get(self, request):
+#          title__startswith = self.request.query_params.get('title__startswith', None)
+
+
+#         likes = ()
+
+
+    
+#        return Response(resultsData)

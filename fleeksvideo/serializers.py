@@ -10,9 +10,10 @@ from rest_framework.serializers import (
 
 
 from rest_framework import serializers
-from .models import Fleek, Comment
+from .models import Fleek, Comment, FleekLike
 from authentication.serializers import UserSerializer
 FLEEK_ACTION_OPTIONS = settings.FLEEK_ACTION_OPTIONS
+from authentication.models import User
 
 
 
@@ -62,6 +63,7 @@ class FleekDetailSerializer(serializers.HyperlinkedModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     comments = SerializerMethodField()
     commentscount = serializers.SerializerMethodField(read_only=True)
+    liked = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Fleek
         fields = [
@@ -75,6 +77,7 @@ class FleekDetailSerializer(serializers.HyperlinkedModelSerializer):
             'views',
             'musicCoverTitle',
             'likes',
+            'liked',
             'publish',
             'commentscount',
             'comments',
@@ -82,6 +85,17 @@ class FleekDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_likes(self, obj):
         return obj.likes.count()
+
+    def get_liked(self, obj):
+        results = False
+        if FleekLike.objects.filter(user__id = self.context['request'].user.id, fleek__id = obj.id).exists():
+            results = True
+        else:
+            results = False
+        return results
+
+        
+
 
     def get_comments(self, obj):
         c_qs = Comment.objects.filter_by_instance(obj)
@@ -101,6 +115,7 @@ class FleekListSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(read_only=True)
     comments = SerializerMethodField()
     commentscount = serializers.SerializerMethodField(read_only=True)
+    liked = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Fleek
         fields = [
@@ -115,12 +130,27 @@ class FleekListSerializer(serializers.HyperlinkedModelSerializer):
             'views',
             'musicCoverTitle',
             'likes',
+            'liked',
             'commentscount',
             'comments'
         ]
     
     def get_likes(self, obj):
         return obj.likes.count()
+
+    def get_liked(self, obj):
+        results = False
+        if FleekLike.objects.filter(user__id = self.context['request'].user.id, fleek__id = obj.id).exists():
+            results = True
+        else:
+            results = False
+        # model_user = FleekLike.objects.filter(user__id = self.context['request'].user.id, fleek__id = obj.id)
+        # if not model_user.exists():
+        #     results = True
+        # else:
+        #     results = False
+
+        return results
     
     def get_comments(self, obj):
         c_qs = Comment.objects.filter_by_instance(obj)
