@@ -63,7 +63,7 @@ class FleekDetailSerializer(serializers.HyperlinkedModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     comments = SerializerMethodField()
     commentscount = serializers.SerializerMethodField(read_only=True)
-    liked = serializers.SerializerMethodField(read_only=True)
+    #liked = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Fleek
         fields = [
@@ -77,7 +77,6 @@ class FleekDetailSerializer(serializers.HyperlinkedModelSerializer):
             'views',
             'musicCoverTitle',
             'likes',
-            'liked',
             'publish',
             'commentscount',
             'comments',
@@ -86,13 +85,13 @@ class FleekDetailSerializer(serializers.HyperlinkedModelSerializer):
     def get_likes(self, obj):
         return obj.likes.count()
 
-    def get_liked(self, obj):
-        results = False
-        if FleekLike.objects.filter(user__id = self.context['request'].user.id, fleek__id = obj.id).exists():
-            results = True
-        else:
-            results = False
-        return results
+    # def get_liked(self, obj):
+    #     results = False
+    #     if FleekLike.objects.filter(user__id = self.context['request'].user.id, fleek__id = obj.id).exists():
+    #         results = True
+    #     else:
+    #         results = False
+    #     return results
 
         
 
