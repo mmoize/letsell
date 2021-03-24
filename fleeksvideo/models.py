@@ -48,7 +48,7 @@ class Fleek(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     draft = models.BooleanField(default=False)
     publish = models.DateField(auto_now=False, auto_now_add=False)
     videoUrl = models.FileField(blank=False, null=False, upload_to= Fleeks_Video_Path)
