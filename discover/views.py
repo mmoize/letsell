@@ -619,6 +619,29 @@ class  ProfileUserPostsAndroidAPI(APIView):
         return Response(resultsData)
 
 
+class  UserPostsAndroidAPI(APIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+    def get(self, id, request):
+
+        posts = Post.objects.filter(owner=id)
+        serializer = PostSerializer(posts, many=True)
+       
+        #random Id 
+        randomID = random.randint(0,100000)
+        #DateTime upon requests
+        date = datetime.datetime.now()
+        #Dictionary Results Data
+        resultsData = {}
+        resultsData["id"] = randomID
+        resultsData["lastRefresh"] = date
+        resultsData["results"] = serializer.data
+
+        return Response(resultsData)
+
+
 @csrf_exempt
 def ProfileUserListings(request, id):
     """
