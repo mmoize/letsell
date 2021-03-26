@@ -71,7 +71,7 @@ urlpatterns = [
     path('imageset/<int:id>/', ProductImageset.as_view(), name='imageset-detail'),
     path('postsandroidapi/', PostsAndroidAPI.as_view(), name='posts_android_api'),
     path('profileuserpostsandroidapi/', ProfileUserPostsAndroidAPI.as_view(), name='profile_user_posts_android_api'),
-    path('userpostsandroidapi/<int:id>/', UserPostsAndroidAPI.as_view(), name='user_posts_android_api'),
+    path('userpostsandroidapi/<int:id>', UserPostsAndroidAPI.as_view(), name='user_posts_android_api'),
     #------------------------end-products
     path('viewpostfilter/<int:category>', Postfilterview.as_view(), name='post_category_filter-detail'),
     path('viewpostsearch/', SearchPost.as_view(), name='post_category_filter-detail'),

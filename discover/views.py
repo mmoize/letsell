@@ -624,8 +624,7 @@ class  UserPostsAndroidAPI(APIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
-    def get(self, id, request):
-
+    def get(self, request, id):
         posts = Post.objects.filter(owner=id)
         serializer = PostSerializer(posts, many=True)
        
