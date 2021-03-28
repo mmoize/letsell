@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from authentication.models import User
 from authentication.serializers import UserSerializer
+from discover.models import Post
 
 from accounts.models import Profile, FollowerRelationship
 import datetime
@@ -51,6 +52,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(read_only=True)
     following = UserSerializer(read_only=True, many=True)
     lastRefresh = serializers.SerializerMethodField(read_only=True)
+    posts_count = serializers.SerializerMethodField(read_only=True)
 
 
 
@@ -62,7 +64,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
                   'bio', 'image',
                   'user', 'follower_count', 
                   'following_count', 'is_following',
-                  'followers', 'following','lastRefresh'
+                  'followers', 'following','lastRefresh','posts_count'
                  )
 
     def get_is_following(self, obj):
@@ -116,5 +118,9 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
         return time
 
+    def get_posts_count(self, obj):
+        req = obj.user_id
+        posts = Post.objects.filter(owner_id = obj.user_id).count()
+        return posts
 
-
+    

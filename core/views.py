@@ -25,6 +25,8 @@ from authentication.serializers import UserSerializer
 @parser_classes([FormParser, MultiPartParser])
 def detail_api_view(request, username, *args, **kwargs):
     # get the profile for the passed username
+
+
     qs = Profile.objects.filter(user__username=username)
     if not qs.exists():
         return Response({"detail": "User not found"}, status=404)
@@ -54,11 +56,10 @@ def detail_api_view(request, username, *args, **kwargs):
 
     serializer =  ProfileSerializer(instance=profile_obj, context={"request": request})
 
-    print('data 2', profile_obj.user.following.all())
     followed_profile = profile_obj.user.following.all()
     user_following = ProfileSerializer(data=followed_profile, many=True)
     user_following.is_valid()
-    print('data 01', user_following.data)
+
     followedUsers = {}
     followedUsers.update(serializer.data)
 
@@ -68,5 +69,4 @@ def detail_api_view(request, username, *args, **kwargs):
         
     
     data = serializer.data
-    print("following", user_following.data)
     return JsonResponse(serializer.data, status=200)
