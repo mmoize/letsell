@@ -472,7 +472,7 @@ class  PostsAndroidAPI(APIView):
         randomID = random.randint(0,100000)
         date = datetime.datetime.now()
         resultsData = {}
-        resultsData["id"] = randomID
+        resultsData["id"] = 1
         resultsData["lastRefresh"] = date
         resultsData["results"] = postSerializedData.data
 
