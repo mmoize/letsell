@@ -612,7 +612,7 @@ class  ProfileUserPostsAndroidAPI(APIView):
         date = datetime.datetime.now()
         #Dictionary Results Data
         resultsData = {}
-        resultsData["id"] = randomID
+        resultsData["id"] = 1
         resultsData["lastRefresh"] = date
         resultsData["results"] = serializer.data
 
