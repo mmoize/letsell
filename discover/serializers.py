@@ -190,7 +190,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
 class PostSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
     url = serializers.HyperlinkedRelatedField(view_name="discover:post_create-detail", read_only=True)
-    owner = UserSerializer(read_only=True,)
+    owner = UserSerializer(read_only=True,) 
     product = ProductSerializer(many=True, read_only=True)
 
 

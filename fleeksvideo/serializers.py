@@ -14,6 +14,7 @@ from .models import Fleek, Comment, FleekLike
 from authentication.serializers import UserSerializer
 FLEEK_ACTION_OPTIONS = settings.FLEEK_ACTION_OPTIONS
 from authentication.models import User
+from accounts.models import Profile
 
 
 
@@ -115,6 +116,7 @@ class FleekListSerializer(serializers.HyperlinkedModelSerializer):
     comments = SerializerMethodField()
     commentscount = serializers.SerializerMethodField(read_only=True)
     liked = serializers.SerializerMethodField(read_only=True)
+    following = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Fleek
         fields = [
@@ -131,7 +133,8 @@ class FleekListSerializer(serializers.HyperlinkedModelSerializer):
             'likes',
             'liked',
             'commentscount',
-            'comments'
+            'comments',
+            'following'
         ]
     
     def get_likes(self, obj):
@@ -160,6 +163,18 @@ class FleekListSerializer(serializers.HyperlinkedModelSerializer):
     def get_commentscount(self, obj):
         c_qs = Comment.objects.filter_by_instance(obj)
         return c_qs.count()
+
+
+    def get_following(self, obj):
+        results = False
+        post_user = Profile.objects.get(user = obj.user)
+
+        if post_user.followers.filter(id = self.context['request'].user.id).exists():
+            results = True
+        else:
+            results = False
+
+        return results
     
 
 
