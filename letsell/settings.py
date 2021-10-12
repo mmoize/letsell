@@ -135,10 +135,10 @@ import os
 
 
 if os.name == 'nt':
-    GDAL_DATA =' C:\OSGeo4W64\share\gdal'
-    OSGEO4W_ROOT = 'C:\OSGeo4W64'
-    PROJ_LIB = 'C:\OSGeo4W64\share\proj'
-    GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal300.dll'
+    GDAL_DATA ='C:\OSGeo4W\share\gdal'
+    OSGEO4W_ROOT = 'C:\OSGeo4W'
+    PROJ_LIB = 'C:\OSGeo4W\share\proj'
+    GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal302.dll'
 
 if 'DYNO' in os.environ:
     GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
