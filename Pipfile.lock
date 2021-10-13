@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d3a6823c9be2dee651c5a4e6f9f71ce17441bda769a94a52128290b6992b4dd8"
+            "sha256": "2be8fcfd8489f9eb3f1272c8708ea70351c1f0a44e53ac7f57fec52bb5afe1ba"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -465,10 +465,10 @@
         },
         "gdal": {
             "hashes": [
-                "sha256:b74d310cc837cfc45b7dfa82eb7cd7ca7d2c2c2114bc31db66e01cc1ea6d0124",
-                "sha256:e721e72c34b5937ba5223ec3e8fe8d6fbda825e16c37773c0b8f916596fc5b2c"
+                "sha256:e721e72c34b5937ba5223ec3e8fe8d6fbda825e16c37773c0b8f916596fc5b2c",
+                "sha256:b74d310cc837cfc45b7dfa82eb7cd7ca7d2c2c2114bc31db66e01cc1ea6d0124"
             ],
-            "path": "C:/Users/moise/Downloads/GDAL-3.3.2-cp37-cp37m-win_amd64.whl",
+            "index": "pypi",
             "version": "==3.3.2"
         },
         "geos": {
