@@ -37,7 +37,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost:8100',
     'localhost'
-    
+
 ]
 
 
@@ -133,24 +133,46 @@ WSGI_APPLICATION = 'letsell.wsgi.application'
 import os
 
 
-
 if os.name == 'nt':
-    GDAL_DATA ='C:\OSGeo4W\share\gdal'
-    OSGEO4W_ROOT = 'C:\OSGeo4W'
-    PROJ_LIB = 'C:\OSGeo4W\share\proj'
-    GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal302.dll'
+    VENV_BASE = os.environ['VIRTUAL_ENV']
+    os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+
+# if os.name == 'nt':
+#     OSGEO4W = "C:\OSGeo4W"
+#     GDAL_DATA ='C:\OSGeo4W\share\gdal'
+#     OSGEO4W_ROOT = 'C:\OSGeo4W'
+#     PROJ_LIB = 'C:\OSGeo4W\share\proj'
+#     GDAL_LIBRARY_PATH = 'C:\OSGeo4W\bin\gdal302.dll'
+# GEOS_LIBRARY_PATH = 'C:\OSGeo4W\bin\geos_c.dll'
+# GDAL_LIBRARY_PATH = 'C:\OSGeo4W\bin\gdal302.dll'
+# if os.name == 'nt':
+#     import platform
+#     OSGEO4W = r"C:\OSGeo4W"
+#     # if '64' in platform.architecture()[0]:
+#     #     OSGEO4W += "64"
+#     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
+#     # GDAL_DATA ='C:\OSGeo4W\share\gdal'
+#     # OSGEO4W_ROOT = 'C:\OSGeo4W'
+#     # PROJ_LIB = 'C:\OSGeo4W\share\proj'
+#     GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal302.dll'
+#     os.environ['OSGEO4W_ROOT'] = OSGEO4W
+#     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
+#     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
+#     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
+
 
 if 'DYNO' in os.environ:
     GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
     GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
-    
-    
 
 
-DATABASE_URL = os.environ['DATABASE_URL']
 
 
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+#DATABASE_URL=os.environ['DATABASE_URL']
+
+
+conn = psycopg2.connect(config('DATABASE_URL_aDDRESS'), sslmode='require')
 #DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
 #DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
 #DATABASES = { 'default': dj_database_url.config() }
@@ -165,7 +187,7 @@ DATABASES = {
         'NAME': '',
         'USER': '',
         'PASSWORD': '',
-        'HOST': 'ec2-52-86-116-94.compute-1.amazonaws.com',
+        'HOST': 'ec2-44-197-94-126.compute-1.amazonaws.com',
         'PORT': '5432'
     }
 }
@@ -175,7 +197,7 @@ DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
 
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID') 
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 AWS_LOCATION = 'static'
@@ -216,7 +238,7 @@ REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'authentication.backends.JWTAuthentication',
-        
+
     ),
     'DEFAULT_PERMISSION_CLASSES': (
       'authentication.backends.JWTAuthentication',
@@ -224,7 +246,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework_filters.backends.RestFrameworkFilterBackend',
     ),
-    
+
 }
 
 
@@ -272,7 +294,7 @@ CORS_ORIGIN_WHITELIST = [
 
 # PUSH_NOTIFICATIONS_SETTINGS = {
 #         "FCM_API_KEY": "",
-        
+
 
 #         # "GCM_API_KEY": "[your api key]",
 #         # "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
@@ -287,7 +309,7 @@ CORS_ORIGIN_WHITELIST = [
 # FCM_DJANGO_SETTINGS = {
 #         # "APP_VERBOSE_NAME": "[string for AppConfig's verbose_name]",
 #          # default: _('FCM Django')
-#         
+#
 #          # true if you want to have only one active device per registered user at a time
 #          # default: False
 #         "ONE_DEVICE_PER_USER": False,
