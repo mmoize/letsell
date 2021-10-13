@@ -33,7 +33,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 FLEEK_ACTION_OPTIONS = ["like", "unlike"]
 
 ALLOWED_HOSTS = [
-    'sellet.herokuapp.com',
+    'fleekmarket.herokuapp.com',
     '127.0.0.1',
     'localhost:8100',
     'localhost'
