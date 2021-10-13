@@ -91,7 +91,7 @@ django-heroku = "*"
 django-rest-passwordreset = "*"
 stream-chat = "*"
 pyjwt = "*"
-gdal = "==3.3.2"
+
 
 [requires]
 python_version = "3.7"

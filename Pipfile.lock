@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2be8fcfd8489f9eb3f1272c8708ea70351c1f0a44e53ac7f57fec52bb5afe1ba"
+            "sha256": "8286c880e918d6ac6b7f9f7f1da8ebd4512ad56fa667011d3df68222a4dfe140"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -462,14 +462,6 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2.0.2"
-        },
-        "gdal": {
-            "hashes": [
-                "sha256:e721e72c34b5937ba5223ec3e8fe8d6fbda825e16c37773c0b8f916596fc5b2c",
-                "sha256:b74d310cc837cfc45b7dfa82eb7cd7ca7d2c2c2114bc31db66e01cc1ea6d0124"
-            ],
-            "index": "pypi",
-            "version": "==3.3.2"
         },
         "geos": {
             "hashes": [
