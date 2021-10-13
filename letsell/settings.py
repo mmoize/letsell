@@ -169,31 +169,42 @@ if 'DYNO' in os.environ:
 
 
 
-#DATABASE_URL=os.environ['DATABASE_URL']
 
+DATABASE_URL = config('DATABASE_URL')
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
-conn = psycopg2.connect(config('DATABASE_URL_aDDRESS'), sslmode='require')
+DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
+
+DATABASES = {
+    'default': {
+        #'ENGINE': 'django.contrib.gis.db.backends.postgis', 
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
+        'CONN_MAX_AGE': 500
+    }
+}
+
+#DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
+# DATABASES = { 'default': dj_database_url.config() }
+
+#conn = psycopg2.connect(config('DATABASE_URL_aDDRESS'), sslmode='require')
 #DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
 #DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
 #DATABASES = { 'default': dj_database_url.config() }
 
-db_from_env = dj_database_url.config(conn_max_age=500)
+#db_from_env = dj_database_url.config(conn_max_age=500)
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': 'ec2-44-197-94-126.compute-1.amazonaws.com',
-        'PORT': '5432'
-    }
-}
 
-DATABASES['default'].update(db_from_env)
-DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+
+# DATABASES['default'].update(db_from_env)
+# DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
 
