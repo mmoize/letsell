@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8286c880e918d6ac6b7f9f7f1da8ebd4512ad56fa667011d3df68222a4dfe140"
+            "sha256": "8497fee001ec9af7b5f1acf10e1893879595a1cca63957a5d595dcb4b2168062"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -220,14 +220,6 @@
             "markers": "python_version >= '3.6'",
             "version": "==8.0.3"
         },
-        "colorama": {
-            "hashes": [
-                "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b",
-                "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"
-            ],
-            "markers": "platform_system == 'Windows'",
-            "version": "==0.4.4"
-        },
         "constantly": {
             "hashes": [
                 "sha256:586372eb92059873e29eba4f9dec8381541b4d3834660707faf8ba59146dfc35",
@@ -286,11 +278,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:1a63f5bb6ff4d7c42f62a519edc2adbb37f9b78068a5a862beff858b68e3dc8b",
-                "sha256:2d390268a13c655c97e0e2ede9d117007996db692c1bb93eabebd4fb7ea7012b"
+                "sha256:9f8be75646f62204320b195062b1d696ba28aa3d45ee72fb7c888ffaebc5bdb2",
+                "sha256:a6e0d1ff11095b7394c079ade7094c73b2dc3df4a7a373c9b58ed73b77a97feb"
             ],
             "index": "pypi",
-            "version": "==3.1"
+            "version": "==3.1.13"
         },
         "django-background-task": {
             "hashes": [
