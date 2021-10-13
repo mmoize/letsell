@@ -174,36 +174,34 @@ DATABASE_URL = config('DATABASE_URL')
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+DATABASES['default']['NAME'] =config('DB_NAME')
+DATABASES['default']['USER'] =config('DB_USER')
+DATABASES['default']['PASSWORD']=config('DB_PASSWORD')
+DATABASES['default']['HOST'] =config('DB_HOST')
+DATABASES['default']['PORT'] =config('DB_PORT')
+DATABASES['default']['CONN_MAX_AGE'] =500
 
-DATABASES = {
-    'default': {
-        'ENGINE':'django.db.backends.postgresql_psycopg2', 
-        'NAME':config('DB_NAME'),
-        'USER':config('DB_USER'),
-        'PASSWORD':config('DB_PASSWORD'),
-        'HOST':config('DB_HOST'),
-        'PORT':config('DB_PORT'),
-        'CONN_MAX_AGE':500
-    }
-}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE':'django.db.backends.postgresql_psycopg2', 
+#         'NAME':config('DB_NAME'),
+#         'USER':config('DB_USER'),
+#         'PASSWORD':config('DB_PASSWORD'),
+#         'HOST':config('DB_HOST'),
+#         'PORT':config('DB_PORT'),
+#         'CONN_MAX_AGE':500
+#     }
+# }
 
 #DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
-# DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
-# DATABASES = { 'default': dj_database_url.config() }
-
-#conn = psycopg2.connect(config('DATABASE_URL_aDDRESS'), sslmode='require')
-#DATABASES['default']= dj_database_url.config(conn_max_age=600, ssl_require=True)
-#DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=True) }
-#DATABASES = { 'default': dj_database_url.config() }
-
-#db_from_env = dj_database_url.config(conn_max_age=500)
 
 
 
 
-
-# DATABASES['default'].update(db_from_env)
-# DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
 
