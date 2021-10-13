@@ -177,14 +177,13 @@ DATABASES = { 'default': dj_database_url.config(conn_max_age=500, ssl_require=Tr
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.contrib.gis.db.backends.postgis', 
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'CONN_MAX_AGE': 500
+        'ENGINE':'django.db.backends.postgresql_psycopg2', 
+        'NAME':config('DB_NAME'),
+        'USER':config('DB_USER'),
+        'PASSWORD':config('DB_PASSWORD'),
+        'HOST':config('DB_HOST'),
+        'PORT':config('DB_PORT'),
+        'CONN_MAX_AGE':500
     }
 }
 
