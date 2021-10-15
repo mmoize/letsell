@@ -73,8 +73,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             'id': self.pk,
             'exp': dt.utcfromtimestamp(dt.timestamp()) 
         }, settings.SECRET_KEY, algorithm='HS256')
-
-        return token.decode('utf-8') 
+        
+        # Last version used the code on the right to return a decoded token/ new update uses below code:     return token.decode('utf-8') 
+        return token
 
 
 
