@@ -75,6 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
         
         # Last version used the code on the right to return a decoded token/ new update uses below code:     return token.decode('utf-8') 
+        # jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"] )
         return token
 
 

@@ -1,5 +1,6 @@
 import jwt
 from django.conf import settings
+#from letsell import settings
 
 from rest_framework import authentication, exceptions
 
@@ -35,7 +36,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     def _authenticate_credentials(self, request, token):
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            print('secret key',   settings.SECRET_KEY)
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         except:
             msg = 'Invalid authentication. Could not decode token.'
             raise exceptions.AuthenticationFailed(msg)
